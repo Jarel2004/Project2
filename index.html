@@ -232,6 +232,79 @@ Hot & spicy chicken w/drinks-110 -->
         main #menu .menu-container .cards .food-card .food-details .price:hover {
             color: #cf4b1a;
         }
+        footer {
+            width: 100%;
+            padding: 20px;
+            background-color: #272727;
+            color: white;
+            text-align: center;
+            margin-top: 40px;
+        }
+        @media (max-width: 768px) {
+            main #hero-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+                main #hero-section .hero-image img {
+                    width: 100%;
+                }
+        }
+        @media (max-width: 768px) {
+            main #menu .menu-container .cards {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            main #menu .menu-container .cards .food-card {
+                width: 100%;
+                max-width: 400px;
+            }
+        }
+        @media (max-width: 480px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            header nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            header .header-btns {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+            }
+        }
+        @media (max-width: 480px) {
+            main #hero-section .hero-text h2 {
+                font-size: 28px;
+            }
+
+            main #hero-section .hero-text p {
+                font-size: 16px;
+            }
+        }
+        @media (max-width: 320px) {
+            header h1 {
+                font-size: 20px;
+            }
+
+            header button {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+        }
+        /* larger screen responsive design */
+        @media (min-width: 1200px) {
+            main {
+                padding: 40px;
+            }
+        }
+        
     </style>
 </head>
 
@@ -435,6 +508,9 @@ Hot & spicy chicken w/drinks-110 -->
                 </div>
         </section>
     </main>
+    <footer>
+        <p>&copy; 2024 Karu-mata. All rights reserved.</p>
+    </footer>
 </body>
 
 </html>

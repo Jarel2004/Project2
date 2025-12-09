@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karu-mata | Cart</title>
+
+    <link rel="stylesheet" href="cart.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="logo">
+        <img src="cart/karumata.png" alt="logo">
+        <h1>Karu-mata</h1>
+    </div>
+
+    <div class="header-info">
+        <div class="info-item"><i class="fa-solid fa-clock"></i> Open: 10AM–9PM</div>
+        <div class="info-item"><i class="fa-solid fa-bolt"></i> Meals ready in 15–20 mins</div>
+        <div class="info-item"><i class="fa-solid fa-motorcycle"></i> Delivery available</div>
+    </div>
+
+    <button class="back-menu" onclick="window.location.href='index.html'">
+        <i class="fa-solid fa-arrow-left"></i> Back to Menu
+    </button>
+</header>
+
+<div class="page-title">
+    <h2>Your Shopping Cart</h2>
+</div>
+
+<div class="cart-container">
+
+    <!-- LEFT SIDE -->
+    <div class="cart-left">
+        <div class="cart-header">
+            <h3>Items in Your Cart</h3>
+            <span id="cart-count" class="tag">0 items</span>
+        </div>
+
+        <!-- WHEN EMPTY -->
+        <div class="cart-empty">
+            <i class="fa-solid fa-basket-shopping"></i>
+            <p>Your cart is empty</p>
+            <small>Add some delicious Korean food from our menu!</small>
+        </div>
+
+        <!-- CART ITEMS GO HERE -->
+        <div id="cart-items"></div>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="cart-summary">
+
+        <h3 class="summary-title"><i class="fa-solid fa-receipt"></i> Order Summary</h3>
+
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="sum-subtotal"></span>
+        </div>
+
+        <div class="summary-row">
+            <span>Delivery Fee</span>
+            <span id="sum-delivery"></span>
+        </div>
+
+        <div class="summary-row">
+            <span>Service Fee</span>
+            <span id="sum-service"></span>
+        </div>
+
+        <div class="total-row">
+            <span>Total</span>
+            <span id="sum-total"></span>
+        </div>
+
+        <div class="address-box">
+            <i class="fa-solid fa-location-dot"></i>
+            <div>
+                <strong>Delivery Address</strong>
+                <p id="address-text">No address set yet</p>
+            </div>
+        </div>
+
+        <button class="checkout-btn">Proceed to Checkout</button>
+        <button class="clear-btn">Clear Cart</button>
+        <button class="shop-btn" onclick="window.location.href='index.html'">
+            <i class="fa-solid fa-store"></i> Continue Shopping
+        </button>
+
+    </div>
+
+</div>
+
+</body>
+</html>

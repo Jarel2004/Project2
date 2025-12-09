@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign In</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,7 +11,7 @@
       rel="stylesheet"
     />
     <style>
-        * {
+      * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
@@ -83,23 +83,35 @@
         margin-top: 11px;
       }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
       <h1>Sign In</h1>
       <form action="/submit-signin" method="POST">
         <div class="input">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" placeholder="Enter your email" required />
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
         </div>
 
         <div class="input">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password" required />
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
         </div>
         <button type="submit">Sign In</button>
-        <p>Don't have an account? <a href="/signup">Sign up</a></p>
+        <p>Don't have an account? <a href="sign-up.html">Sign up</a></p>
       </form>
     </div>
-</body>
+  </body>
 </html>

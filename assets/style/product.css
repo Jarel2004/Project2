@@ -159,19 +159,20 @@ header {
     transition: transform 0.2s ease-in-out;
 }
 
+
 .product-card:hover {
     transform: translateY(-5px);
 }
 
 .product-card img {
     width: 100%;
-    height: 160px;
-    object-fit: cover;
+    height: 180px;        /* SAME HEIGHT FOR ALL */
+    object-fit: cover;    /* CROPS NICELY */
+    display: block;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
 }
 
-.product-info {
-    padding: 15px;
-}
 
 .product-title {
     font-size: 18px;
@@ -191,21 +192,23 @@ header {
     color: #c62828;
 }
 
-/* ADD BUTTON */
+.product-info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .add-btn {
-    float: right;
-    padding: 7px 18px;
+    align-self: flex-end;
+    padding: 8px 20px;
     background: #c62828;
     border-radius: 20px;
     color: white;
-    margin-top: 7px;
     border: none;
     cursor: pointer;
     transition: 0.2s;
-}
-
-.add-btn:hover {
-    background: #b71c1c;
+    margin-top: 8px;
 }
 
 /* ----------------------------------------------------
@@ -303,4 +306,20 @@ header {
     border-radius: 6px;
     cursor: pointer;
     font-size: 15px;
+}
+.products-section {
+    padding-bottom: 150px;
+}
+
+.products-grid {
+    margin-bottom: 150px;
+}
+footer {
+    background: #c62828;
+    padding: 20px;
+    margin: 40px 40px 20px 40px; /* same margin as filter section */
+    border-radius: 12px;
+    text-align: center;
+    color: white;
+    font-size: 14px;
 }

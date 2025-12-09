@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!-- SUSHI
 chicken roll-145
 hot roll-149
@@ -23,80 +22,86 @@ Porkchop w/rice & salad-79
 Hot & spicy chicken w/drinks-110 -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Poppins", sans-serif;
-      }
-      html {
-        scroll-behavior: smooth;
-      }
-      body {
-        background-color: #f4f4f4;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-      }
-      header {
-        width: 100%;
-        padding: 20px 40px;
-        position: fixed;
-        top: 0;
-        left: 0;
-        background-color: #fff;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .logo {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-      }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        header {
+            width: 100%;
+            padding: 20px 10px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         .logo-img img {
             width: 40px;
             height: 40px;
         }
+
         header h1 {
             font-family: "Oswald", sans-serif;
             font-size: 24px;
             color: #272727;
         }
+
         header nav ul {
             list-style: none;
             display: flex;
             gap: 20px;
         }
+
         header nav ul li a {
             text-decoration: none;
             color: #555;
             font-weight: 500;
         }
+
         header nav ul li a:hover {
             color: #e2612d;
         }
+
         header button {
             background-color: #e2612d;
             color: white;
@@ -106,12 +111,14 @@ Hot & spicy chicken w/drinks-110 -->
             cursor: pointer;
             font-size: 16px;
         }
+
         main {
             margin-top: 75px;
             width: 100%;
             max-width: 1200px;
             padding: 20px;
         }
+
         main #hero-section {
             display: flex;
             justify-content: space-between;
@@ -119,19 +126,23 @@ Hot & spicy chicken w/drinks-110 -->
             gap: 20px;
             margin-bottom: 40px;
         }
+
         main #hero-section .hero-text {
             flex: 1;
         }
+
         main #hero-section .hero-text h2 {
             font-size: 36px;
             color: #272727;
             margin-bottom: 15px;
         }
+
         main #hero-section .hero-text p {
             font-size: 18px;
             color: #555;
             margin-bottom: 20px;
         }
+
         main #hero-section .hero-text .btn {
             display: inline-block;
             padding: 10px 20px;
@@ -141,291 +152,212 @@ Hot & spicy chicken w/drinks-110 -->
             border-radius: 4px;
             font-size: 16px;
         }
+
         main #hero-section .hero-text .btn:hover {
             background-color: #cf4b1a;
         }
+
         main #hero-section .hero-image img {
             width: 400px;
             border-radius: 8px;
         }
+
         main #menu .menu-container {
             text-align: center;
         }
+
         main #menu .menu-container h2 {
             font-size: 28px;
             color: #272727;
             margin-bottom: 30px;
         }
+
         main #menu .menu-container .cards {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
             justify-content: center;
         }
+
+        main #menu .menu-container .cards .food-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 200px;
+            text-align: left;
+        }
+
+        main #menu .menu-container .cards .food-card .food-img img {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            width: 100%;
+            height: 150px;
+        }
+
+        main #menu .menu-container .cards .food-card .food-details {
+            padding: 15px;
+        }
+
+        main #menu .menu-container .cards .food-card .food-details h3 {
+            font-size: 20px;
+            color: #272727;
+            margin-bottom: 10px;
+        }
+
+        main #menu .menu-container .cards .food-card .food-details p {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        main #menu .menu-container .cards .food-card .food-details .price {
+            font-weight: bold;
+            color: #e2612d;
+        }
+
+        main #menu .menu-container .cards .food-card .food-details .price:hover {
+            color: #cf4b1a;
+        }
+
+        main #menu .menu-container .cards .food-card:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s;
+        }
+
+        main #menu .menu-container .cards .food-card:active {
+            transform: translateY(0);
+            transition: transform 0.1s;
+        }
+
+        main #menu .menu-container .cards .food-card .food-details .price:hover {
+            color: #cf4b1a;
+        }
     </style>
-  </head>
-  <body>
-    <header>
-      <div class="logo">
-        <div class="logo-img">
-          <img src="src/karumata.png" alt="Karu-mata Logo" />
-        </div>
-        <h1>Karu-mata</h1>
-      </div>
-      <nav>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="#menu">Menu</a></li>
-        </ul>
-      </nav>
-      <button><i class="fas fa-user"></i> Sign In</button>
-    </header>
-    <main>
-      <section id="hero-section">
-        <div class="hero-text">
-          <h2>Welcome to Karu-mata</h2>
-          <p>Your favorite place for delicious sushi and sizzling dishes.</p>
-          <a href="#menu" class="btn">Explore Our Menu</a>
-        </div>
-        <div class="hero-image">
-          <img src="src/kfood_bg.jpg" alt="Delicious food from Karu-mata" />
-        </div>
-      </section>
-      <section id="menu">
-        <div class="menu-container">
-          <h2>Our Menu</h2>
-          <div class="cards">
-            <div class="food-card">
-              <img src="sushi.jpg" alt="Sushi Roll" />
-              <h3>Chicken Roll</h3>
-              <p>Delicious chicken sushi roll with avocado and cucumber.</p>
-              <p>Price: ₱145</p>
-            </div>
-            <div class="food-card">
-              <img src="sushi.jpg" alt="Sushi Roll" />
-              <h3>Hot Roll</h3>
-              <p>Delicious hot sushi roll with spicy tuna and avocado.</p>
-              <p>Price: ₱149</p>
-            </div>
-            <div class="food-card">
-              <img src="sushi.jpg" alt="Sushi Roll" />
-              <h3>SoftShell Mango</h3>
-              <p>
-                Delicious soft shell crab sushi roll with mango and avocado.
-              </p>
-              <p>Price: ₱149</p>
-            </div>
-            <div class="food-card">
-              <!-- mango sushi-69 -->
-              <img src="sushi.jpg" alt="Sushi Roll" />
-              <h3>Mango Sushi</h3>
-              <p>
-                Delicious mango sushi roll with sweet mango and sticky rice.
-              </p>
-              <p>Price: ₱69</p>
-            </div>
-            <div class="food-card">
-              onigiri-120
-              <img src="sushi.jpg" alt="Sushi Roll" />
-              <h3>Onigiri</h3>
-              <p>Delicious onigiri rice balls with various fillings.</p>
-              <p>Price: ₱120</p>
-            </div>
-            <div class="food-card">
-              kimbap-89
-              <img src="sushi.jpg" alt="Sushi Roll" />
-              <h3>Kimbap</h3>
-              <p>Delicious kimbap rolls with various fillings.</p>
-              <p>Price: ₱89</p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </body>
-=======
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>K-Foods Restaurant - Korean Delights</title>
-
-    <!-- ICONS + CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/style/product.css">
 </head>
 
 <body>
-
     <header>
         <div class="logo">
-            <img src="cart/karumata.png" class="brand-logo" />
+            <div class="logo-img">
+                <img src="src/karumata.png" alt="Karu-mata Logo" />
+            </div>
             <h1>Karu-mata</h1>
         </div>
-
-        <!-- RIGHT SIDE ICONS -->
-        <div class="nav-icons">
-
-            <div class="restaurant-info">
-                <div class="info-item">
-                    <i class="fas fa-clock"></i>
-                    <span>Open: 10:00 AM – 9:00 PM</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-bolt"></i>
-                    <span>Meals ready in 15–20 minutes</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-motorcycle"></i>
-                    <span>Delivery available</span>
-                </div>
-            </div>
-
-            <!-- Cart Button -->
-            <div class="btns">
-                <button id="cart-button" class="cart-circle" onclick="window.location.href='cart.html'">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span id="cart-count">0</span>
-                </button>
-
-                <!-- Profile Button -->
-                <button id="profile-toggle" class="profile-circle">
-                    <i class="fas fa-user"></i>
-                </button>
-            </div>
-
+        <nav>
+            <ul>
+                <li><a href="#hero-section">Home</a></li>
+                <li><a href="#menu">Menu</a></li>
+            </ul>
+        </nav>
+        <div class="header-btns">
+            <button class="cart-button"><i class="fas fa-shopping-cart"></i> Cart</button>
+            <button class="sign-in-button"><i class="fas fa-user"></i> Sign In</button>
         </div>
-
     </header>
-
-   <!-- FILTER SECTION -->
-    <div class="main-container">
-        <div class="filter-section">
-            <h2 class="filter-title"><i class="fas fa-filter"></i> Filter by Category</h2>
-
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="best-seller">Best Sellers</button>
-                <button class="filter-btn" data-filter="sushi">Sushi</button>
-                <button class="filter-btn" data-filter="sizzling">Sizzling</button>
+    <main>
+        <section id="hero-section">
+            <div class="hero-text">
+                <h2>Welcome to Karu-mata</h2>
+                <p>Your favorite place for delicious sushi and sizzling dishes.</p>
+                <a href="#menu" class="btn">Explore Our Menu</a>
             </div>
-
-        </div>
-
-        <!-- PRODUCT SECTION -->
-        <div class="content-wrapper">
-            <div class="products-section">
-                <h2 class="section-title"><i class="fas fa-store"></i> Korean Delights</h2>
-
-                <div class="products-grid" id="products-grid">
-                    <!-- JS inserts product cards here -->
-                </div>
+            <div class="hero-image">
+                <img src="src/kfood_bg.jpg" alt="Delicious food from Karu-mata" />
             </div>
-        </div>
-    </div>
-
-    <footer>
-        <p>© 2023 K-Foods Restaurant. All rights reserved.</p>
-        <p>Experience authentic Korean flavors made with passion and tradition.</p>
-    </footer>
-    
-<div class="profile-sidebar" id="profileSidebar">
-
-    <!-- HEADER -->
-    <div class="profile-header">
-        <button class="close-profile">&times;</button>
-        <div class="profile-avatar">
-            <i class="fa-solid fa-user"></i>
-        </div>
-        <div class="profile-info">
-            <div class="profile-name">Welcome, Guest!</div>
-            <div class="profile-email">guest@example.com</div>
-        </div>
-
-        <button class="profile-login-btn">Sign In / Register</button>
-    </div>
-
-    <!-- CONTENT WRAPPER FOR SCROLL -->
-    <div class="profile-content">
-
-        <!-- DELIVERY LOCATION -->
-        <div class="profile-section">
-            <h3><i class="fa-solid fa-location-dot"></i> Delivery Location</h3>
-
-            <div class="profile-location-box">
-                123 Main Street, Barangay 1, Manila 1000
-            </div>
-
-            <button class="manage-address-btn">
-                <i class="fa-solid fa-pen"></i> Manage Addresses
-            </button>
-        </div>
-
-        <hr>
-
-        <!-- ORDER HISTORY -->
-        <div class="profile-section">
-            <h3><i class="fa-solid fa-clock-rotate-left"></i> Order History</h3>
-
-            <div class="order-card">
-                <div class="order-info">
-                    <strong>Order #KFD235293</strong>
-                    <span>1 item</span>
+        </section>
+        <section id="menu">
+            <div class="menu-container">
+                <h2>Our Menu</h2>
+                <div class="cards">
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img width="100%" src="src/Chicken_Roll.jpeg" alt="Sushi Roll" />
+                        </div>
+                        <div class="food-details">
+                            <h3>Chicken Roll</h3>
+                            <p>Delicious chicken sushi roll with avocado and cucumber.</p>
+                            <p class="price">Price: ₱145</p>
+                        </div>
+                    </div>
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img width="100%" src="src/Hot_Roll.jpeg" alt="Sushi Roll" />
+                        </div>
+                        <div class="food-details">
+                            <h3>Hot Roll</h3>
+                            <p>Delicious hot sushi roll with spicy tuna and avocado.</p>
+                            <p class="price">Price: ₱149</p>
+                        </div>
+                    </div>
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img width="100%" src="src/SoftShell_Mango.jpeg" alt="Sushi Roll" />
+                        </div>
+                        <div class="food-details">
+                            <h3>SoftShell Mango</h3>
+                            <p>
+                                Delicious soft shell crab sushi roll with mango and avocado.
+                            </p>
+                            <p class="price">Price: ₱149</p>
+                        </div>
+                    </div>
+                    <div class="food-card">
+                        <!-- mango sushi-69 -->
+                        <div class="food-img">
+                            <img width="100%" src="src/Mango.jpeg" alt="Mango Sushi" />
+                        </div>
+                        <div class="food-details">
+                            <h3>Mango Sushi</h3>
+                            <p>
+                                Delicious mango sushi roll with sweet mango and sticky rice.
+                            </p>
+                            <p class="price">Price: ₱69</p>
+                        </div>
+                    </div>
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img width="100%" src="src/Onigiri.jpeg" alt="Onigiri" />
+                        </div>
+                        <div class="food-details">
+                            <h3>Onigiri</h3>
+                            <p>Delicious onigiri rice balls with various fillings.</p>
+                            <p class="price">Price: ₱120</p>
+                        </div>
+                    </div>
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img width="100%" src="src/Bibimbap.jpeg" alt="Bibimbap" />
+                        </div>
+                        <div class="food-details">
+                            <h3>Bibimbap</h3>
+                            <p>Delicious bibimbap with mixed vegetables and beef.</p>
+                            <p class="price">Price: ₱89</p>
+                        </div>
+                    </div>
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img width="100%" src="src/Pork_Sisig.jpeg" alt="Pork Sisig" />
+                        </div>
+                        <div class="food-details">
+                            <h3>Pork Sisig</h3>
+                            <p>Delicious pork sisig with onions and chili.</p>
+                            <p class="price">Price: ₱129</p>
+                        </div>
+                    </div>
+                    <div class="food-card">
+                        <!-- Pepper Steak-129 -->
+                        <div class="food-img">
+                            <img width="100%" src="src/PepperSteak.jpeg" alt="Pepper Steak" />
+                        </div>
+                        <div class="food-details">
+                            <h3>Pepper Steak</h3>
+                            <p>Delicious pepper steak with black pepper sauce.</p>
+                            <p class="price">Price: ₱129</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="order-right">
-                    <span>12/4/2025</span>
-                    <strong>P140</strong>
-                </div>
-            </div>
-
-            <div class="order-card">
-                <div class="order-info">
-                    <strong>Order #KFD069561</strong>
-                    <span>1 item</span>
-                </div>
-                <div class="order-right">
-                    <span>12/4/2025</span>
-                    <strong>P140</strong>
-                </div>
-            </div>
-        </div>
-
-        <!-- LOGOUT -->
-        <button class="logout-btn">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
-        </button>
-
-    </div>
-</div>
-
-<!-- ADDRESS MODAL -->
-<div id="addressModal" class="address-modal">
-    <div class="address-modal-content">
-        <h2>Manage Address</h2>
-
-        <label>Street</label>
-        <input type="text" id="addrStreet" placeholder="Street / House No.">
-
-        <label>Barangay</label>
-        <input type="text" id="addrBarangay" placeholder="Barangay">
-
-        <label>City</label>
-        <input type="text" id="addrCity" placeholder="City">
-
-        <label>ZIP Code</label>
-        <input type="text" id="addrZip" placeholder="ZIP">
-
-        <button class="save-address-btn">Save Address</button>
-        <button class="close-address-btn">Close</button>
-    </div>
-</div>
-<script src="assets/script/products.js"></script>
-<script src="assets/script/script.js"></script>
-
-
-
+        </section>
+    </main>
 </body>
->>>>>>> 279ed76c7d583eac936212998eec78a0115bf300
+
 </html>

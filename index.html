@@ -85,47 +85,73 @@
         <p>Experience authentic Korean flavors made with passion and tradition.</p>
     </footer>
     
+<div class="profile-sidebar" id="profileSidebar">
 
-<!-- PROFILE SIDEBAR -->
-<div id="profile-sidebar" class="profile-sidebar">
-
+    <!-- HEADER -->
     <div class="profile-header">
-        <div class="profile-avatar">
-            <i class="fas fa-user-circle"></i>
-        </div>
-
-        <div class="profile-info">
-            <h3 class="profile-name">Welcome, Guest!</h3>
-            <p class="profile-email">guest@example.com</p>
-
-            <!-- Show Sign-In Button -->
-            <button class="login-btn" onclick="window.location.href='log-in.html'">Sign In / Register</button>
-
-            <!-- Logout button hidden for now -->
-            <!-- <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Log Out</button> -->
-        </div>
-
         <button class="close-profile">&times;</button>
+        <div class="profile-avatar">
+            <i class="fa-solid fa-user"></i>
+        </div>
+        <div class="profile-info">
+            <div class="profile-name">Welcome, Guest!</div>
+            <div class="profile-email">guest@example.com</div>
+        </div>
+
+        <button class="profile-login-btn">Sign In / Register</button>
     </div>
 
+    <!-- CONTENT WRAPPER FOR SCROLL -->
     <div class="profile-content">
 
+        <!-- DELIVERY LOCATION -->
         <div class="profile-section">
-            <h4><i class="fas fa-map-marker-alt"></i> Delivery Location</h4>
-            <p class="current-address">No address set yet</p>
+            <h3><i class="fa-solid fa-location-dot"></i> Delivery Location</h3>
+
+            <div class="profile-location-box">
+                123 Main Street, Barangay 1, Manila 1000
+            </div>
 
             <button class="manage-address-btn">
-                <i class="fas fa-edit"></i> Manage Addresses
+                <i class="fa-solid fa-pen"></i> Manage Addresses
             </button>
         </div>
 
+        <hr>
+
+        <!-- ORDER HISTORY -->
         <div class="profile-section">
-            <h4><i class="fas fa-history"></i> Order History</h4>
-            <div id="order-history-list"></div>
+            <h3><i class="fa-solid fa-clock-rotate-left"></i> Order History</h3>
+
+            <div class="order-card">
+                <div class="order-info">
+                    <strong>Order #KFD235293</strong>
+                    <span>1 item</span>
+                </div>
+                <div class="order-right">
+                    <span>12/4/2025</span>
+                    <strong>P140</strong>
+                </div>
+            </div>
+
+            <div class="order-card">
+                <div class="order-info">
+                    <strong>Order #KFD069561</strong>
+                    <span>1 item</span>
+                </div>
+                <div class="order-right">
+                    <span>12/4/2025</span>
+                    <strong>P140</strong>
+                </div>
+            </div>
         </div>
 
-    </div>
+        <!-- LOGOUT -->
+        <button class="logout-btn">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+        </button>
 
+    </div>
 </div>
 
 <!-- ADDRESS MODAL -->
@@ -149,10 +175,9 @@
         <button class="close-address-btn">Close</button>
     </div>
 </div>
-
-<!-- JS SCRIPTS -->
 <script src="assets/script/products.js"></script>
 <script src="assets/script/script.js"></script>
+
 
 
 </body>

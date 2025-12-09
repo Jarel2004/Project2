@@ -57,3 +57,21 @@ document.addEventListener("click", e => {
         document.getElementById("cart-count").innerText = cartCount;
     }
 });
+// OPEN PROFILE SIDEBAR
+document.getElementById("profile-toggle").addEventListener("click", function () {
+    document.getElementById("profileSidebar").classList.add("active");
+});
+
+// CLOSE PROFILE SIDEBAR
+document.querySelector(".close-profile").addEventListener("click", function () {
+    document.getElementById("profileSidebar").classList.remove("active");
+});
+    // OPEN ADDRESS MODAL
+document.querySelector(".manage-address-btn").addEventListener("click", () => {
+    document.getElementById("addressModal").style.display = "flex";
+});
+
+// CLOSE ADDRESS MODAL
+document.querySelector(".close-address-btn").addEventListener("click", () => {
+    document.getElementById("addressModal").style.display = "none";
+});

@@ -386,6 +386,45 @@
             top: 10px;
             right: 10px;
         }
+        /* modal list of items styles */
+        .modal-item {
+            display: flex;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            align-items: center;
+        }
+        .modal-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .modal-item-details h4 {
+            font-size: 18px;
+            color: #272727;
+            margin-bottom: 5px;
+        }
+        .modal-item-details p {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .remove-item-btn {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .remove-item-btn:hover {
+            background-color: #cc0000;
+        }
+        
+
+
         .confirm-btn {
             background-color: #e2612d;
             color: white;
@@ -517,13 +556,29 @@
     <!-- .proceed to check out modal -->
     <div class="modal" id="checkout-modal">
         <div class="modal-content">
-            show the list of items in the cart with their subtotal, delivery fee, service fee, and total amount with image and name
+            <!-- show the list of items in the cart with their subtotal, delivery fee, service fee, and total amount with image and name -->
             <span class="close-button" onclick="closeModal('checkout-modal')">&times;</span>
             <h2>Checkout</h2>
             <p>Please confirm your order details:</p>
             <div class="order-summary">
                 <div class="list-of-items">
+                    <!-- the list of items in the cart here -->
+                     <!-- add remove button each items -->
+                    <div id="modal-item-list">
+                        ${cart.map(item => `
+                            <div class="modal-item">
+                                <img width="100" src="${item.image}" alt="${item.name}">
+                                <div class="modal-item-details">
+                                    <h4>${item.name}</h4>
+                                    <p>₱${item.price.toFixed(2)} x ${item.quantity}</p>
+                                    <span>₱${(item.price * item.quantity).toFixed(2)}</span>
+                                    <button class="remove-item-btn" onclick="removeItemFromCart(${index})">Remove</button>
+                                    <br>
+                                </div>
+                            </div>
+                        `).join('')}
 
+                    </div>
                 </div>
                 <div class="summary-details">
                     <p>Subtotal: </p><span id="modal-subtotal">₱0.00</span>

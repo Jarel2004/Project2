@@ -1,32 +1,10 @@
-<!-- SUSHI
-chicken roll-145
-hot roll-149
-softshell mango-149
-mango sushi-69
-onigiri-120
-kimbap-89
-
-SIZLING
-Pork Sisig-129
-Pepper Steak-129
-Kimchi Pork-129
-Teriyaki-129
-
-Spicy Garlic Shrimp-129
-
-BEST SELLER
-POKEBOWL-129
-BIBIMBAP-129
-Stirfried Fishcake sweet & spicy-100
-Porkchop w/rice & salad-79
-Hot & spicy chicken w/drinks-110 -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Karu-mata - Sushi & Sizzling</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -111,7 +89,10 @@ Hot & spicy chicken w/drinks-110 -->
             cursor: pointer;
             font-size: 16px;
         }
-
+        .sign-in-button a {
+            color: white;
+            text-decoration: none;
+        }
         main {
             margin-top: 75px;
             width: 100%;
@@ -185,6 +166,7 @@ Hot & spicy chicken w/drinks-110 -->
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 200px;
             text-align: left;
+            cursor: pointer;
         }
 
         main #menu .menu-container .cards .food-card .food-img img {
@@ -192,6 +174,7 @@ Hot & spicy chicken w/drinks-110 -->
             border-top-right-radius: 8px;
             width: 100%;
             height: 150px;
+            object-fit: cover;
         }
 
         main #menu .menu-container .cards .food-card .food-details {
@@ -215,10 +198,6 @@ Hot & spicy chicken w/drinks-110 -->
             color: #e2612d;
         }
 
-        main #menu .menu-container .cards .food-card .food-details .price:hover {
-            color: #cf4b1a;
-        }
-
         main #menu .menu-container .cards .food-card:hover {
             transform: translateY(-5px);
             transition: transform 0.3s;
@@ -229,9 +208,6 @@ Hot & spicy chicken w/drinks-110 -->
             transition: transform 0.1s;
         }
 
-        main #menu .menu-container .cards .food-card .food-details .price:hover {
-            color: #cf4b1a;
-        }
         footer {
             width: 100%;
             padding: 20px;
@@ -240,17 +216,170 @@ Hot & spicy chicken w/drinks-110 -->
             text-align: center;
             margin-top: 40px;
         }
+
+        /* Modal styles */
+        .modal-add-to-cart {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0);
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-add-to-cart.show {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-add-to-cart .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 8px;
+            text-align: center;
+            transform: scale(0.7);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .modal-add-to-cart.show .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-add-to-cart .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-add-to-cart .close-button:hover,
+        .modal-add-to-cart .close-button:focus {
+            color: black;
+        }
+
+        .modal-add-to-cart .quantity-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .modal-add-to-cart .quantity-controls button {
+            padding: 10px 15px;
+            background-color: #e2612d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 40px;
+            height: 40px;
+        }
+
+        .modal-add-to-cart .quantity-controls button:hover {
+            background-color: #cf4b1a;
+        }
+
+        .modal-add-to-cart .quantity-controls .quantity {
+            font-size: 20px;
+            font-weight: bold;
+            min-width: 40px;
+        }
+
+        .modal-add-to-cart .total-price {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #272727;
+        }
+
+        .modal-add-to-cart .confirm-btn,
+        .modal-add-to-cart .cancel-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .modal-add-to-cart .confirm-btn {
+            background-color: #e2612d;
+            color: white;
+        }
+
+        .modal-add-to-cart .cancel-btn {
+            background-color: #ccc;
+            color: black;
+        }
+
+        .modal-add-to-cart .confirm-btn:hover {
+            background-color: #cf4b1a;
+        }
+
+        .modal-add-to-cart .cancel-btn:hover {
+            background-color: #bbb;
+        }
+
+        /* Success message styles */
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background-color: #4caf50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            z-index: 1002;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive design */
         @media (max-width: 768px) {
             main #hero-section {
                 flex-direction: column;
                 text-align: center;
             }
 
-                main #hero-section .hero-image img {
-                    width: 100%;
-                }
-        }
-        @media (max-width: 768px) {
+            main #hero-section .hero-image img {
+                width: 100%;
+            }
+
             main #menu .menu-container .cards {
                 flex-direction: column;
                 align-items: center;
@@ -261,6 +390,7 @@ Hot & spicy chicken w/drinks-110 -->
                 max-width: 400px;
             }
         }
+
         @media (max-width: 480px) {
             header {
                 flex-direction: column;
@@ -278,8 +408,7 @@ Hot & spicy chicken w/drinks-110 -->
                 display: flex;
                 justify-content: space-between;
             }
-        }
-        @media (max-width: 480px) {
+
             main #hero-section .hero-text h2 {
                 font-size: 28px;
             }
@@ -287,7 +416,13 @@ Hot & spicy chicken w/drinks-110 -->
             main #hero-section .hero-text p {
                 font-size: 16px;
             }
+
+            .success-message {
+                right: 10px;
+                left: 10px;
+            }
         }
+
         @media (max-width: 320px) {
             header h1 {
                 font-size: 20px;
@@ -298,13 +433,12 @@ Hot & spicy chicken w/drinks-110 -->
                 padding: 8px 12px;
             }
         }
-        /* larger screen responsive design */
+
         @media (min-width: 1200px) {
             main {
                 padding: 40px;
             }
         }
-        
     </style>
 </head>
 
@@ -324,9 +458,10 @@ Hot & spicy chicken w/drinks-110 -->
         </nav>
         <div class="header-btns">
             <button class="cart-button"><i class="fas fa-shopping-cart"></i> Cart</button>
-            <button class="sign-in-button"><i class="fas fa-user"></i> Sign In</button>
+            <button class="sign-in-button"><a href="sign-in.html"><i class="fas fa-user"></i> Sign In</a></button>
         </div>
     </header>
+
     <main>
         <section id="hero-section">
             <div class="hero-text">
@@ -338,13 +473,14 @@ Hot & spicy chicken w/drinks-110 -->
                 <img src="src/kfood_bg.jpg" alt="Delicious food from Karu-mata" />
             </div>
         </section>
+
         <section id="menu">
             <div class="menu-container">
                 <h2>Our Menu</h2>
                 <div class="cards">
                     <div class="food-card">
                         <div class="food-img">
-                            <img width="100%" src="src/Chicken_Roll.jpeg" alt="Sushi Roll" />
+                            <img src="src/Chicken_Roll.jpeg" alt="Chicken Roll" />
                         </div>
                         <div class="food-details">
                             <h3>Chicken Roll</h3>
@@ -354,7 +490,7 @@ Hot & spicy chicken w/drinks-110 -->
                     </div>
                     <div class="food-card">
                         <div class="food-img">
-                            <img width="100%" src="src/Hot_Roll.jpeg" alt="Sushi Roll" />
+                            <img src="src/Hot_Roll.jpeg" alt="Hot Roll" />
                         </div>
                         <div class="food-details">
                             <h3>Hot Roll</h3>
@@ -362,23 +498,19 @@ Hot & spicy chicken w/drinks-110 -->
                             <p class="price">Price: ₱149</p>
                         </div>
                     </div>
-                    
                     <div class="food-card">
-                        <!-- mango sushi-69 -->
                         <div class="food-img">
-                            <img width="100%" src="src/Mango.jpeg" alt="Mango Sushi" />
+                            <img src="src/Mango.jpeg" alt="Mango Sushi" />
                         </div>
                         <div class="food-details">
                             <h3>Mango Sushi</h3>
-                            <p>
-                                Delicious mango sushi roll with sweet mango and sticky rice.
-                            </p>
+                            <p>Delicious mango sushi roll with sweet mango and sticky rice.</p>
                             <p class="price">Price: ₱69</p>
                         </div>
                     </div>
                     <div class="food-card">
                         <div class="food-img">
-                            <img width="100%" src="src/Onigiri.jpeg" alt="Onigiri" />
+                            <img src="src/Onigiri.jpeg" alt="Onigiri" />
                         </div>
                         <div class="food-details">
                             <h3>Onigiri</h3>
@@ -388,17 +520,17 @@ Hot & spicy chicken w/drinks-110 -->
                     </div>
                     <div class="food-card">
                         <div class="food-img">
-                            <img width="100%" src="src/Bibimbap.jpeg" alt="Bibimbap" />
+                            <img src="src/Bibimbap.jpeg" alt="Kimbap" />
                         </div>
                         <div class="food-details">
-                            <h3>Bibimbap</h3>
-                            <p>Delicious bibimbap with mixed vegetables and beef.</p>
+                            <h3>Kimbap</h3>
+                            <p>Korean rice rolls with vegetables and meat.</p>
                             <p class="price">Price: ₱89</p>
                         </div>
                     </div>
                     <div class="food-card">
                         <div class="food-img">
-                            <img width="100%" src="src/Pork_Sisig.jpeg" alt="Pork Sisig" />
+                            <img src="src/Pork_Sisig.jpeg" alt="Pork Sisig" />
                         </div>
                         <div class="food-details">
                             <h3>Pork Sisig</h3>
@@ -407,9 +539,8 @@ Hot & spicy chicken w/drinks-110 -->
                         </div>
                     </div>
                     <div class="food-card">
-                        <!-- Pepper Steak-129 -->
                         <div class="food-img">
-                            <img width="100%" src="src/PepperSteak.jpeg" alt="Pepper Steak" />
+                            <img src="src/PepperSteak.jpeg" alt="Pepper Steak" />
                         </div>
                         <div class="food-details">
                             <h3>Pepper Steak</h3>
@@ -418,9 +549,8 @@ Hot & spicy chicken w/drinks-110 -->
                         </div>
                     </div>
                     <div class="food-card">
-                        <!-- Kimchi Pork-129 -->
                         <div class="food-img">
-                            <img width="100%" src="src/Kimchi_Pork.jpeg" alt="Kimchi Pork" />
+                            <img src="src/Kimchi_Pork.jpeg" alt="Kimchi Pork" />
                         </div>
                         <div class="food-details">
                             <h3>Kimchi Pork</h3>
@@ -429,9 +559,8 @@ Hot & spicy chicken w/drinks-110 -->
                         </div>
                     </div>
                     <div class="food-card">
-                        <!-- Teriyaki-129 -->
                         <div class="food-img">
-                            <img width="100%" src="src/TeriyakiSizzling.jpeg" alt="Teriyaki" />
+                            <img src="src/TeriyakiSizzling.jpeg" alt="Teriyaki" />
                         </div>
                         <div class="food-details">
                             <h3>Teriyaki</h3>
@@ -440,9 +569,8 @@ Hot & spicy chicken w/drinks-110 -->
                         </div>
                     </div>
                     <div class="food-card">
-                        <!-- Spicy Garlic Shrimp-129 -->
                         <div class="food-img">
-                            <img width="100%" src="src/SpicyGarlicShrimp.jpeg" alt="Spicy Garlic Shrimp" />
+                            <img src="src/SpicyGarlicShrimp.jpeg" alt="Spicy Garlic Shrimp" />
                         </div>
                         <div class="food-details">
                             <h3>Spicy Garlic Shrimp</h3>
@@ -451,9 +579,8 @@ Hot & spicy chicken w/drinks-110 -->
                         </div>
                     </div>
                     <div class="food-card">
-                        <!--POKEBOWL-129 -->
                         <div class="food-img">
-                            <img width="100%" src="src/Pokebowl.jpeg" alt="Pokebowl" />
+                            <img src="src/Pokebowl.jpeg" alt="Pokebowl" />
                         </div>
                         <div class="food-details">
                             <h3>Pokebowl</h3>
@@ -462,9 +589,8 @@ Hot & spicy chicken w/drinks-110 -->
                         </div>
                     </div>
                     <div class="food-card">
-                        <!--BIBIMBAP-129 -->
                         <div class="food-img">
-                            <img width="100%" src="src/Bibimbap.jpeg" alt="Bibimbap" />
+                            <img src="src/Bibimbap.jpeg" alt="Bibimbap" />
                         </div>
                         <div class="food-details">
                             <h3>Bibimbap</h3>
@@ -473,9 +599,8 @@ Hot & spicy chicken w/drinks-110 -->
                         </div>
                     </div>
                     <div class="food-card">
-                        <!--Stirfried Fishcake sweet & spicy-100 -->
                         <div class="food-img">
-                            <img width="100%" src="src/Stirfried_Fishcake.jpeg" alt="Stirfried Fishcake sweet & spicy" />
+                            <img src="src/Stirfried_Fishcake.jpeg" alt="Stirfried Fishcake" />
                         </div>
                         <div class="food-details">
                             <h3>Stirfried Fishcake sweet & spicy</h3>
@@ -484,33 +609,166 @@ Hot & spicy chicken w/drinks-110 -->
                         </div>
                     </div>
                     <div class="food-card">
-                        <!--Porkchop w/rice & salad-79 -->
                         <div class="food-img">
-                            <img width="100%" src="src/Porkchop.jpeg" alt="Porkchop w/rice & salad" />
+                            <img src="src/Porkchop.jpeg" alt="Porkchop" />
                         </div>
                         <div class="food-details">
                             <h3>Porkchop w/rice & salad</h3>
                             <p>Porkchop with rice & salad.</p>
-                            <p class="price">Price: ₱100</p>
+                            <p class="price">Price: ₱79</p>
                         </div>
                     </div>
                     <div class="food-card">
-                        <!--Hot & spicy chicken w/drinks-110 -->
                         <div class="food-img">
-                            <img width="100%" src="src/H&S_Chicken.jpeg" alt="Hot & spicy chicken " />
+                            <img src="src/H&S_Chicken.jpeg" alt="Hot & spicy chicken" />
                         </div>
                         <div class="food-details">
-                            <h3>Hot & spicy chicken </h3>
+                            <h3>Hot & spicy chicken</h3>
                             <p>Spicy chicken meal with drinks.</p>
-                            <p class="price">Price: ₱100</p>
+                            <p class="price">Price: ₱110</p>
                         </div>
                     </div>
                 </div>
+            </div>
         </section>
     </main>
+
     <footer>
         <p>&copy; 2024 Karu-mata. All rights reserved.</p>
     </footer>
-</body>
 
+    <!-- Add to Cart Modal -->
+    <div class="modal-add-to-cart">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <img src="" alt="Food Image" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
+            <h3 style="margin-bottom: 10px;">Food Name</h3>
+            <p style="margin-bottom: 10px; color: #555;">Description</p>
+            <p class="price" style="margin-bottom: 15px; font-weight: bold; color: #e2612d;">Price: ₱0</p>
+            <div class="quantity-controls">
+                <button class="decrease-qty">-</button>
+                <span class="quantity">1</span>
+                <button class="increase-qty">+</button>
+            </div>
+            <div class="total-price">Total: ₱0</div>
+            <button class="confirm-btn">Add to Cart</button>
+            <button class="cancel-btn">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message">
+        <i class="fas fa-check-circle"></i> Item added to cart successfully!
+    </div>
+
+    <script>
+        const foodCards = document.querySelectorAll('.food-card');
+        const modal = document.querySelector('.modal-add-to-cart');
+        const closeButton = document.querySelector('.close-button');
+        const cancelBtn = document.querySelector('.cancel-btn');
+        const confirmBtn = document.querySelector('.confirm-btn');
+        const quantitySpan = document.querySelector('.quantity');
+        const decreaseBtn = document.querySelector('.decrease-qty');
+        const increaseBtn = document.querySelector('.increase-qty');
+        const totalPriceDiv = document.querySelector('.total-price');
+        const successMessage = document.querySelector('.success-message');
+
+        let currentPrice = 0;
+        let quantity = 1;
+
+        // Function to open modal with animation
+        function openModal() {
+            modal.style.display = 'block';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+        }
+
+        // Function to close modal with animation
+        function closeModal() {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        // Open modal when food card is clicked
+        foodCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const foodImg = card.querySelector('.food-img img').src;
+                const foodTitle = card.querySelector('.food-details h3').innerText;
+                const foodDesc = card.querySelector('.food-details p').innerText;
+                const foodPriceText = card.querySelector('.food-details .price').innerText;
+
+                // Extract price number from "Price: ₱145" format
+                currentPrice = parseInt(foodPriceText.replace(/[^0-9]/g, ''));
+                quantity = 1;
+
+                // Update modal content
+                modal.querySelector('.modal-content img').src = foodImg;
+                modal.querySelector('.modal-content h3').innerText = foodTitle;
+                modal.querySelector('.modal-content p').innerText = foodDesc;
+                modal.querySelector('.modal-content .price').innerText = foodPriceText;
+                quantitySpan.innerText = quantity;
+                totalPriceDiv.innerText = `Total: ₱${currentPrice * quantity}`;
+
+                openModal();
+            });
+        });
+
+        // Decrease quantity
+        decreaseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (quantity > 1) {
+                quantity--;
+                quantitySpan.innerText = quantity;
+                totalPriceDiv.innerText = `Total: ₱${currentPrice * quantity}`;
+            }
+        });
+
+        // Increase quantity
+        increaseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            quantity++;
+            quantitySpan.innerText = quantity;
+            totalPriceDiv.innerText = `Total: ₱${currentPrice * quantity}`;
+        });
+
+        // Confirm and add to cart
+        confirmBtn.addEventListener('click', () => {
+            closeModal();
+            
+            // Show success message after modal closes
+            setTimeout(() => {
+                successMessage.style.display = 'block';
+                
+                // Hide success message after 3 seconds
+                setTimeout(() => {
+                    successMessage.style.animation = 'slideOut 0.3s ease-out';
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                        successMessage.style.animation = 'slideIn 0.3s ease-out';
+                    }, 300);
+                }, 3000);
+            }, 300);
+        });
+
+        // Close modal when close button is clicked
+        closeButton.addEventListener('click', () => {
+            closeModal();
+        });
+
+        // Close modal when cancel button is clicked
+        cancelBtn.addEventListener('click', () => {
+            closeModal();
+        });
+
+        // Close modal when clicking outside the modal content
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
 </html>

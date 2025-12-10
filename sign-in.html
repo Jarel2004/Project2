@@ -145,84 +145,107 @@
     <script>
       // Handle form submission
       document.getElementById('signin-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Get form values
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value.trim();
-        
-        // Basic validation
-        if (!email || !password) {
-          showError('Please fill in all fields.');
-          return;
-        }
-        
-        if (!validateEmail(email)) {
-          showError('Please enter a valid email address.');
-          return;
-        }
-        
-        if (password.length < 6) {
-          showError('Password must be at least 6 characters long.');
-          return;
-        }
-        
-        // For demo purposes - accept any email/password combination
-        // In a real app, you would check against a database here
-        
-        // Show success message
-        const successMessage = document.getElementById('success-message');
-        const errorMessage = document.getElementById('error-message');
-        const form = document.getElementById('signin-form');
-        
-        errorMessage.style.display = 'none';
-        form.style.display = 'none';
-        successMessage.style.display = 'block';
-        
-        // Redirect to index.php after 2 seconds
-        setTimeout(() => {
-          window.location.href = 'index.php';
-        }, 2000);
+          e.preventDefault();
+          
+          // Get form values
+          const email = document.getElementById('email').value.trim();
+          const password = document.getElementById('password').value.trim();
+          
+          // Basic validation
+          if (!email || !password) {
+              showError('Please fill in all fields.');
+              return;
+          }
+          
+          if (!validateEmail(email)) {
+              showError('Please enter a valid email address.');
+              return;
+          }
+          
+          if (password.length < 6) {
+              showError('Password must be at least 6 characters long.');
+              return;
+          }
+          
+          // Show loading state
+          const submitBtn = this.querySelector('button[type="submit"]');
+          const originalText = submitBtn.textContent;
+          submitBtn.textContent = 'Signing in...';
+          submitBtn.disabled = true;
+          
+          // Submit the form via AJAX
+          const formData = new FormData(this);
+          
+          fetch('php/login.php', {
+              method: 'POST',
+              body: formData
+          })
+          .then(response => {
+              if (response.redirected) {
+                  // PHP redirected successfully - login was successful
+                  window.location.href = response.url; // This will be index.php
+                  return '';
+              }
+              return response.text();
+          })
+          .then(data => {
+              // Reset button
+              submitBtn.textContent = originalText;
+              submitBtn.disabled = false;
+              
+              if (data) {
+                  // There was an error message from PHP
+                  showError(data);
+              }
+          })
+          .catch(error => {
+              // Reset button
+              submitBtn.textContent = originalText;
+              submitBtn.disabled = false;
+              
+              console.error('Error:', error);
+              showError('Network error. Please try again.');
+          });
       });
       
       function showError(message) {
-        const errorMessage = document.getElementById('error-message');
-        errorMessage.textContent = message;
-        errorMessage.style.display = 'block';
-        
-        // Hide error message after 5 seconds
-        setTimeout(() => {
-          errorMessage.style.display = 'none';
-        }, 5000);
+          const errorMessage = document.getElementById('error-message');
+          errorMessage.textContent = message;
+          errorMessage.style.display = 'block';
+          
+          // Hide error message after 5 seconds
+          setTimeout(() => {
+              errorMessage.style.display = 'none';
+          }, 5000);
       }
       
       function validateEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email);
+          const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          return re.test(email);
       }
       
       // Check URL parameters for success/error messages
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has('success')) {
-        showSuccess('Signed in successfully! Redirecting to home page...');
-        setTimeout(() => {
-          window.location.href = 'index.html';
-        }, 2000);
+          showSuccess('Signed in successfully! Redirecting to home page...');
+          setTimeout(() => {
+              window.location.href = 'index.php';
+          }, 2000);
       }
       
       if (urlParams.has('error')) {
-        const errorMessage = urlParams.get('error');
-        showError('Error: ' + errorMessage);
+          const errorMessage = urlParams.get('error');
+          showError('Error: ' + errorMessage);
       }
       
       function showSuccess(message) {
-        const successMessage = document.getElementById('success-message');
-        successMessage.textContent = message;
-        successMessage.style.display = 'block';
-        
-        setTimeout(() => {
-          successMessage.style.display = 'none';
-        }, 3000);
+          const successMessage = document.getElementById('success-message');
+          successMessage.textContent = message;
+          successMessage.style.display = 'block';
+          
+          setTimeout(() => {
+              successMessage.style.display = 'none';
+          }, 3000);
       }
     </script>
   </body>

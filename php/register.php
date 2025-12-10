@@ -38,9 +38,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = $conn->prepare("INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)");
     
     if ($stmt->execute([$username, $email, $hashed_password])) {
-        // Auto login
+        // Regenerate session ID to prevent session fixation
+        session_regenerate_id(true);
+        
+        // Clear any existing session data
+        $_SESSION = array();
+        
+        // Auto login with new user
         $_SESSION['user_id'] = $conn->lastInsertId();
         $_SESSION['username'] = $username;
+        $_SESSION['email'] = $email;
         
         // Redirect to index
         header("Location: ../index.php");

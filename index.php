@@ -1093,18 +1093,18 @@ $username = $_SESSION['username'];
         const logoutBtn = document.getElementById('logout-btn');
 
         // Function to open profile modal with slide animation
+        // Function to open profile modal with slide animation
         function openProfileModal() {
             profileModal.style.display = 'block';
             setTimeout(() => {
                 profileModal.classList.add('show');
             }, 10);
             
-            // Load saved data from localStorage, default to PHP session username
-    
-            const savedUsername = localStorage.getItem('karumata_username') || '<?php echo htmlspecialchars(ucfirst($username)); ?>';
+            // Load data - ALWAYS use PHP session username, only address from localStorage
+            const phpUsername = '<?php echo htmlspecialchars(ucfirst($username)); ?>';
             const savedAddress = localStorage.getItem('karumata_address') || '';
             
-            usernameDisplay.textContent = savedUsername;
+            usernameDisplay.textContent = phpUsername;
             addressInput.value = savedAddress;
             
             // Hide input field by default

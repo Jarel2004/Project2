@@ -1,8 +1,13 @@
 <?php
-// register.php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Start session only once
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 require_once 'db_connect.php';
-session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = trim($_POST['username']);
@@ -38,10 +43,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['username'] = $username;
         
         // Redirect to index
-        header("Location: index.html");
+        header("Location: ../index.php");
         exit();
     } else {
-        die("Registration failed");
+        die("Registration failed: " . implode(", ", $stmt->errorInfo()));
     }
+} else {
+    // If someone accesses this directly via GET, redirect to sign-up page
+    header("Location: ../sign-up.html");
+    exit();
 }
 ?>

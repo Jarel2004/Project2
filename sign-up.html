@@ -51,9 +51,9 @@
         flex-direction: column;
         gap: 15px;
       }
-        form label {
-            margin-bottom: 5px;
-            color: #555;
+      form label {
+        margin-bottom: 5px;
+        color: #555;
       }
       form input[type="text"],
       form input[type="email"],
@@ -74,37 +74,148 @@
         cursor: pointer;
         font-size: 16px;
       }
-        form button:hover {
-            background-color: #cf4b1a;
-        }
-        form p {
-            font-size: 12px;
-            text-align: center;
-            margin-top: 11px;
-        }
+      form button:hover {
+        background-color: #cf4b1a;
+      }
+      form p {
+        font-size: 12px;
+        text-align: center;
+        margin-top: 11px;
+      }
+      .success-message {
+        background-color: #d4edda;
+        color: #155724;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        text-align: center;
+        display: none;
+      }
+      .error-message {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        text-align: center;
+        display: none;
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <h1>Create an Account</h1>
-      <form action="submit-signup" method="POST">
+      
+      <div id="success-message" class="success-message">
+        Account created successfully! Redirecting to home page...
+      </div>
+      
+      <div id="error-message" class="error-message"></div>
+      
+      <form id="signup-form" action="register.php" method="POST">
         <div class="input">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="Enter your username" required />
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" placeholder="Enter your username" required autocomplete="off" />
         </div>
 
         <div class="input">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" placeholder="Enter your email" required />
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email" required autocomplete="off" />
         </div>
 
         <div class="input">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password" required />
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="off" minlength="6" />
+          <small style="font-size: 12px; color: #777; margin-top: 5px;">Password must be at least 6 characters long</small>
         </div>
-        <button type="submit">Sign Up</button>
+        
+        <div class="submit-btn">
+          <button type="submit">Sign Up</button>
+        </div>
         <p>Already have an account? <a href="sign-in.html">Log in</a></p>
       </form>
     </div>
+    
+    <script>
+      // Handle form submission
+      document.getElementById('signup-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+        
+        // Basic validation
+        if (!username || !email || !password) {
+          showError('Please fill in all fields.');
+          return;
+        }
+        
+        if (password.length < 6) {
+          showError('Password must be at least 6 characters long.');
+          return;
+        }
+        
+        if (!validateEmail(email)) {
+          showError('Please enter a valid email address.');
+          return;
+        }
+        
+        // Show success message
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
+        const form = document.getElementById('signup-form');
+        
+        errorMessage.style.display = 'none';
+        form.style.display = 'none';
+        successMessage.style.display = 'block';
+        
+        // Redirect to index.html after 2 seconds
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 2000);
+      });
+      
+      function showError(message) {
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+        
+        // Hide error message after 5 seconds
+        setTimeout(() => {
+          errorMessage.style.display = 'none';
+        }, 5000);
+      }
+      
+      function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+      }
+      
+      // Check URL parameters for success/error messages
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('success')) {
+        showSuccess('Account created successfully! Redirecting to home page...');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 2000);
+      }
+      
+      if (urlParams.has('error')) {
+        const errorMessage = urlParams.get('error');
+        showError('Error: ' + errorMessage);
+      }
+      
+      function showSuccess(message) {
+        const successMessage = document.getElementById('success-message');
+        successMessage.textContent = message;
+        successMessage.style.display = 'block';
+        
+        setTimeout(() => {
+          successMessage.style.display = 'none';
+        }, 3000);
+      }
+    </script>
   </body>
 </html>

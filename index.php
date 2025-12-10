@@ -1,3 +1,17 @@
+<?php
+// index.php
+
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to sign-in if not logged in
+    header("Location: sign-in.html");
+    exit();
+}
+
+// User is logged in
+$username = $_SESSION['username'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,6 +45,7 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
+            overflow-x: hidden;
         }
 
         header {
@@ -89,18 +104,27 @@
             cursor: pointer;
             font-size: 16px;
         }
+        
         .header-btns {
             display: flex;
             gap: 10px;
         }
-        .sign-in-button a {
+        
+        /* circle shape profile button */
+        .profile-button {
+            padding: 10px 12px;
+            background-color: #555;
+            border-radius: 50%;
             color: white;
-            text-decoration: none;
+            border: none;
+            cursor: pointer;
         }
+        
         .cart-button a {
             color: white;
             text-decoration: none;
         }
+        
         main {
             margin-top: 75px;
             width: 100%;
@@ -340,6 +364,175 @@
             background-color: #bbb;
         }
 
+        /* Profile Modal Styles */
+        .profile-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1002;
+        }
+
+        .profile-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0);
+            transition: background-color 0.3s ease;
+        }
+
+        .profile-modal.show .profile-modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .profile-modal-content {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            overflow-y: auto;
+            transition: right 0.3s ease-in-out;
+        }
+
+        .profile-modal.show .profile-modal-content {
+            right: 0;
+        }
+
+        .profile-close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .profile-close-button:hover {
+            color: #e2612d;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+
+        .profile-header i {
+            font-size: 60px;
+            color: #555;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .profile-header h2 {
+            color: #272727;
+            font-size: 24px;
+        }
+
+        .profile-section {
+            margin-bottom: 25px;
+        }
+
+        .profile-section h3 {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .username-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .username-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #272727;
+            padding: 8px 12px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+            flex: 1;
+        }
+
+        .edit-button {
+            background: none;
+            border: none;
+            color: #e2612d;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+        }
+
+        .edit-button:hover {
+            color: #cf4b1a;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #e2612d;
+        }
+
+        .profile-actions {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .save-button {
+            background-color: #e2612d;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .save-button:hover {
+            background-color: #cf4b1a;
+        }
+
+        .logout-button {
+            background-color: #f8f8f8;
+            color: #272727;
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .logout-button:hover {
+            background-color: #f0f0f0;
+        }
+
         /* Success message styles */
         .success-message {
             display: none;
@@ -351,7 +544,7 @@
             padding: 15px 20px;
             border-radius: 4px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            z-index: 1002;
+            z-index: 1003;
             animation: slideIn 0.3s ease-out;
         }
 
@@ -397,6 +590,11 @@
                 width: 100%;
                 max-width: 400px;
             }
+
+            .profile-modal-content {
+                width: 100%;
+                max-width: 320px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -429,6 +627,12 @@
                 right: 10px;
                 left: 10px;
             }
+
+            .profile-modal-content {
+                width: 100%;
+                max-width: 280px;
+                padding: 20px;
+            }
         }
 
         @media (max-width: 320px) {
@@ -439,6 +643,11 @@
             header button {
                 font-size: 14px;
                 padding: 8px 12px;
+            }
+
+            .profile-modal-content {
+                width: 100%;
+                max-width: 250px;
             }
         }
 
@@ -466,7 +675,11 @@
         </nav>
         <div class="header-btns">
             <button class="cart-button"><a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a></button>
-            <button class="sign-in-button"><a href="sign-in.html"><i class="fas fa-user"></i> Sign In</a></button>
+            <button class="profile-button" id="profile-btn"><i class="fas fa-user"></i></button>
+        </div>
+        <div class="header-btns">
+            <span>Welcome, <?php echo htmlspecialchars($username); ?>!</span>
+            <button onclick="window.location.href='logout.php'">Logout</button>
         </div>
     </header>
 
@@ -486,7 +699,7 @@
             <div class="menu-container">
                 <h2>Our Menu</h2>
                 <div class="cards">
-                    <div class="food-card">
+                    <div class="food-card" data-product-id="1">
                         <div class="food-img">
                             <img src="src/Chicken_Roll.jpeg" alt="Chicken Roll" />
                         </div>
@@ -496,7 +709,7 @@
                             <p class="price">Price: ₱145</p>
                         </div>
                     </div>
-                    <div class="food-card">
+                    <div class="food-card" data-product-id="2">
                         <div class="food-img">
                             <img src="src/Hot_Roll.jpeg" alt="Hot Roll" />
                         </div>
@@ -506,7 +719,7 @@
                             <p class="price">Price: ₱149</p>
                         </div>
                     </div>
-                    <div class="food-card">
+                    <div class="food-card" data-product-id="3">
                         <div class="food-img">
                             <img src="src/Mango.jpeg" alt="Mango Sushi" />
                         </div>
@@ -516,7 +729,7 @@
                             <p class="price">Price: ₱69</p>
                         </div>
                     </div>
-                    <div class="food-card">
+                    <div class="food-card" data-product-id="4">
                         <div class="food-img">
                             <img src="src/Onigiri.jpeg" alt="Onigiri" />
                         </div>
@@ -526,7 +739,7 @@
                             <p class="price">Price: ₱120</p>
                         </div>
                     </div>
-                    <div class="food-card">
+                    <div class="food-card" data-product-id="5">
                         <div class="food-img">
                             <img src="src/Bibimbap.jpeg" alt="Kimbap" />
                         </div>
@@ -536,7 +749,7 @@
                             <p class="price">Price: ₱89</p>
                         </div>
                     </div>
-                    <div class="food-card">
+                    <div class="food-card" data-product-id="6">
                         <div class="food-img">
                             <img src="src/Pork_Sisig.jpeg" alt="Pork Sisig" />
                         </div>
@@ -546,7 +759,7 @@
                             <p class="price">Price: ₱129</p>
                         </div>
                     </div>
-                    <div class="food-card">
+                    <div class="food-card" data-product-id="7">
                         <div class="food-img">
                             <img src="src/PepperSteak.jpeg" alt="Pepper Steak" />
                         </div>
@@ -556,7 +769,7 @@
                             <p class="price">Price: ₱129</p>
                         </div>
                     </div>
-                    <div class="food-card">
+                    <div class="food-card" data-product-id="8">
                         <div class="food-img">
                             <img src="src/Kimchi_Pork.jpeg" alt="Kimchi Pork" />
                         </div>
@@ -566,7 +779,7 @@
                             <p class="price">Price: ₱129</p>
                         </div>
                     </div>
-                    <div class="food-card">
+                    <div class="food-card" data-product-id="9">
                         <div class="food-img">
                             <img src="src/TeriyakiSizzling.jpeg" alt="Teriyaki" />
                         </div>
@@ -576,7 +789,7 @@
                             <p class="price">Price: ₱129</p>
                         </div>
                     </div>
-                    <div class="food-card">
+                    <div class="food-card" data-product-id="10">
                         <div class="food-img">
                             <img src="src/SpicyGarlicShrimp.jpeg" alt="Spicy Garlic Shrimp" />
                         </div>
@@ -586,7 +799,7 @@
                             <p class="price">Price: ₱129</p>
                         </div>
                     </div>
-                    <div class="food-card">
+                    <div class="food-card" data-product-id="11">
                         <div class="food-img">
                             <img src="src/Pokebowl.jpeg" alt="Pokebowl" />
                         </div>
@@ -596,7 +809,7 @@
                             <p class="price">Price: ₱129</p>
                         </div>
                     </div>
-                    <div class="food-card">
+                    <div class="food-card" data-product-id="12">
                         <div class="food-img">
                             <img src="src/Bibimbap.jpeg" alt="Bibimbap" />
                         </div>
@@ -606,7 +819,7 @@
                             <p class="price">Price: ₱129</p>
                         </div>
                     </div>
-                    <div class="food-card">
+                    <div class="food-card" data-product-id="13">
                         <div class="food-img">
                             <img src="src/Stirfried_Fishcake.jpeg" alt="Stirfried Fishcake" />
                         </div>
@@ -616,7 +829,7 @@
                             <p class="price">Price: ₱100</p>
                         </div>
                     </div>
-                    <div class="food-card">
+                    <div class="food-card" data-product-id="14">
                         <div class="food-img">
                             <img src="src/Porkchop.jpeg" alt="Porkchop" />
                         </div>
@@ -626,7 +839,7 @@
                             <p class="price">Price: ₱79</p>
                         </div>
                     </div>
-                    <div class="food-card">
+                    <div class="food-card" data-product-id="15">
                         <div class="food-img">
                             <img src="src/H&S_Chicken.jpeg" alt="Hot & spicy chicken" />
                         </div>
@@ -664,65 +877,112 @@
         </div>
     </div>
 
+    <!-- Profile Modal -->
+    <div class="profile-modal" id="profile-modal">
+        <div class="profile-modal-overlay"></div>
+        <div class="profile-modal-content">
+            <button class="profile-close-button" id="profile-close-btn">&times;</button>
+            
+            <div class="profile-header">
+                <i class="fas fa-user-circle"></i>
+                <h2>My Profile</h2>
+            </div>
+            
+            <div class="profile-section">
+                <h3>Username</h3>
+                <div class="username-container">
+                    <div class="username-display" id="username-display">Guest User</div>
+                    <button class="edit-button" id="edit-username-btn">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                </div>
+                <input type="text" id="username-input" class="input-field" placeholder="Enter your username" style="display: none;">
+            </div>
+            
+            <div class="profile-section">
+                <h3>Delivery Address</h3>
+                <input type="text" id="address-input" class="input-field" placeholder="Enter your delivery address">
+                <small style="color: #777; font-size: 12px; display: block; margin-top: 5px;">
+                    This address will be used for delivery
+                </small>
+            </div>
+            
+            <div class="profile-actions">
+                <button class="save-button" id="save-profile-btn">Save Changes</button>
+                <button class="logout-button" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Log Out
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Success Message -->
     <div class="success-message">
         <i class="fas fa-check-circle"></i> Item added to cart successfully!
     </div>
 
     <script>
+        let currentProductId = 0; 
+        // Existing cart modal functionality
         const foodCards = document.querySelectorAll('.food-card');
-        const modal = document.querySelector('.modal-add-to-cart');
-        const closeButton = document.querySelector('.close-button');
-        const cancelBtn = document.querySelector('.cancel-btn');
-        const confirmBtn = document.querySelector('.confirm-btn');
-        const quantitySpan = document.querySelector('.quantity');
-        const decreaseBtn = document.querySelector('.decrease-qty');
-        const increaseBtn = document.querySelector('.increase-qty');
-        const totalPriceDiv = document.querySelector('.total-price');
+        const cartModal = document.querySelector('.modal-add-to-cart');
+        const closeButton = cartModal.querySelector('.close-button');
+        const cancelBtn = cartModal.querySelector('.cancel-btn');
+        const confirmBtn = cartModal.querySelector('.confirm-btn');
+        const quantitySpan = cartModal.querySelector('.quantity');
+        const decreaseBtn = cartModal.querySelector('.decrease-qty');
+        const increaseBtn = cartModal.querySelector('.increase-qty');
+        const totalPriceDiv = cartModal.querySelector('.total-price');
         const successMessage = document.querySelector('.success-message');
 
         let currentPrice = 0;
         let quantity = 1;
+        const foodCards = document.querySelectorAll('.food-card');
+        const cartModal = document.querySelector('.modal-add-to-cart');
 
-        // Function to open modal with animation
-        function openModal() {
-            modal.style.display = 'block';
+        // Function to open cart modal with animation
+        function openCartModal() {
+            cartModal.style.display = 'block';
             setTimeout(() => {
-                modal.classList.add('show');
+                cartModal.classList.add('show');
             }, 10);
         }
 
-        // Function to close modal with animation
-        function closeModal() {
-            modal.classList.remove('show');
+        // Function to close cart modal with animation
+        function closeCartModal() {
+            cartModal.classList.remove('show');
             setTimeout(() => {
-                modal.style.display = 'none';
+                cartModal.style.display = 'none';
             }, 300);
         }
 
+        // Open cart modal when food card is clicked
         // Open modal when food card is clicked
-        foodCards.forEach(card => {
-            card.addEventListener('click', () => {
-                const foodImg = card.querySelector('.food-img img').src;
-                const foodTitle = card.querySelector('.food-details h3').innerText;
-                const foodDesc = card.querySelector('.food-details p').innerText;
-                const foodPriceText = card.querySelector('.food-details .price').innerText;
+foodCards.forEach(card => {
+    card.addEventListener('click', () => {
+        const foodImg = card.querySelector('.food-img img').src;
+        const foodTitle = card.querySelector('.food-details h3').innerText;
+        const foodDesc = card.querySelector('.food-details p').innerText;
+        const foodPriceText = card.querySelector('.food-details .price').innerText;
+        
+        // Extract price number from "Price: ₱145" format
+        currentPrice = parseInt(foodPriceText.replace(/[^0-9]/g, ''));
+        quantity = 1;
+        
+        // Store product ID - you need to add data-product-id attribute to your HTML
+        currentProductId = card.getAttribute('data-product-id');
+        
+        // Update modal content
+        cartModal.querySelector('.modal-content img').src = foodImg;
+        cartModal.querySelector('.modal-content h3').innerText = foodTitle;
+        cartModal.querySelector('.modal-content p').innerText = foodDesc;
+        cartModal.querySelector('.modal-content .price').innerText = foodPriceText;
+        quantitySpan.innerText = quantity;
+        totalPriceDiv.innerText = `Total: ₱${currentPrice * quantity}`;
 
-                // Extract price number from "Price: ₱145" format
-                currentPrice = parseInt(foodPriceText.replace(/[^0-9]/g, ''));
-                quantity = 1;
-
-                // Update modal content
-                modal.querySelector('.modal-content img').src = foodImg;
-                modal.querySelector('.modal-content h3').innerText = foodTitle;
-                modal.querySelector('.modal-content p').innerText = foodDesc;
-                modal.querySelector('.modal-content .price').innerText = foodPriceText;
-                quantitySpan.innerText = quantity;
-                totalPriceDiv.innerText = `Total: ₱${currentPrice * quantity}`;
-
-                openModal();
-            });
-        });
+        openCartModal();
+    });
+});
 
         // Decrease quantity
         decreaseBtn.addEventListener('click', (e) => {
@@ -743,41 +1003,32 @@
         });
 
         // Confirm and add to cart
-        confirmBtn.addEventListener('click', () => {
-            // Get cart from localStorage or initialize empty array
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            
-            // Get current item details
-            const foodName = modal.querySelector('.modal-content h3').innerText;
-            const foodImg = modal.querySelector('.modal-content img').src;
-            const foodDesc = modal.querySelector('.modal-content p').innerText;
-            
-            // Create item object
-            const item = {
-                name: foodName,
-                price: currentPrice,
-                quantity: quantity,
-                image: foodImg,
-                description: foodDesc,
-                total: currentPrice * quantity
-            };
-            
-            // Check if item already exists in cart
-            const existingItemIndex = cart.findIndex(cartItem => cartItem.name === foodName);
-            
-            if (existingItemIndex > -1) {
-                // Update quantity if item exists
-                cart[existingItemIndex].quantity += quantity;
-                cart[existingItemIndex].total = cart[existingItemIndex].price * cart[existingItemIndex].quantity;
-            } else {
-                // Add new item to cart
-                cart.push(item);
-            }
-            
-            // Save to localStorage
-            localStorage.setItem('cart', JSON.stringify(cart));
-            
-            closeModal();
+        // Confirm and add to cart
+confirmBtn.addEventListener('click', () => {
+    // Get current item details
+    const foodName = cartModal.querySelector('.modal-content h3').innerText;
+    const foodImg = cartModal.querySelector('.modal-content img').src;
+    const foodDesc = cartModal.querySelector('.modal-content p').innerText;
+    
+    // For PHP, we need product ID - you'll need to store it when opening modal
+    // First, let's get the product ID from the clicked food card
+    const productId = currentProductId; // You need to set this when opening modal
+    
+    // If you don't have productId stored, you can get it from image filename or name
+    // For now, let's assume you have a way to get it
+    
+    // Send to PHP backend
+    fetch('add_to_cart.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `product_id=${currentProductId}&quantity=${quantity}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            closeCartModal();
             
             // Show success message after modal closes
             setTimeout(() => {
@@ -792,24 +1043,151 @@
                     }, 300);
                 }, 3000);
             }, 300);
-        });
+        } else {
+            alert('Failed to add to cart: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to add to cart. Please try again.');
+    });
+});
 
-        // Close modal when close button is clicked
+        // Close cart modal when close button is clicked
         closeButton.addEventListener('click', () => {
-            closeModal();
+            closeCartModal();
         });
 
-        // Close modal when cancel button is clicked
+        // Close cart modal when cancel button is clicked
         cancelBtn.addEventListener('click', () => {
-            closeModal();
+            closeCartModal();
         });
 
-        // Close modal when clicking outside the modal content
+        // Close cart modal when clicking outside the modal content
         window.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                closeModal();
+            if (event.target === cartModal) {
+                closeCartModal();
             }
         });
+
+        // Profile modal functionality
+        const profileBtn = document.getElementById('profile-btn');
+        const profileModal = document.getElementById('profile-modal');
+        const profileCloseBtn = document.getElementById('profile-close-btn');
+        const editUsernameBtn = document.getElementById('edit-username-btn');
+        const usernameDisplay = document.getElementById('username-display');
+        const usernameInput = document.getElementById('username-input');
+        const addressInput = document.getElementById('address-input');
+        const saveProfileBtn = document.getElementById('save-profile-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // Function to open profile modal with slide animation
+        function openProfileModal() {
+            profileModal.style.display = 'block';
+            setTimeout(() => {
+                profileModal.classList.add('show');
+            }, 10);
+            
+            // Load saved data from localStorage
+            const savedUsername = localStorage.getItem('karumata_username') || 'Guest User';
+            const savedAddress = localStorage.getItem('karumata_address') || '';
+            
+            usernameDisplay.textContent = savedUsername;
+            addressInput.value = savedAddress;
+            
+            // Hide input field by default
+            usernameInput.style.display = 'none';
+            usernameDisplay.style.display = 'flex';
+        }
+
+        // Function to close profile modal with slide animation
+        function closeProfileModal() {
+            profileModal.classList.remove('show');
+            setTimeout(() => {
+                profileModal.style.display = 'none';
+                // Reset to display mode
+                usernameInput.style.display = 'none';
+                usernameDisplay.style.display = 'flex';
+            }, 300);
+        }
+
+        // Open profile modal when profile button is clicked
+        profileBtn.addEventListener('click', openProfileModal);
+
+        // Close profile modal when close button is clicked
+        profileCloseBtn.addEventListener('click', closeProfileModal);
+
+        // Close profile modal when clicking on overlay
+        profileModal.querySelector('.profile-modal-overlay').addEventListener('click', closeProfileModal);
+
+        // Edit username functionality
+        editUsernameBtn.addEventListener('click', () => {
+            usernameInput.value = usernameDisplay.textContent;
+            usernameDisplay.style.display = 'none';
+            usernameInput.style.display = 'block';
+            usernameInput.focus();
+        });
+
+        // Save profile changes
+        saveProfileBtn.addEventListener('click', () => {
+            const newUsername = usernameInput.value.trim() || usernameDisplay.textContent;
+            const newAddress = addressInput.value.trim();
+            
+            // Save to localStorage
+            localStorage.setItem('karumata_username', newUsername);
+            localStorage.setItem('karumata_address', newAddress);
+            
+            // Update display
+            usernameDisplay.textContent = newUsername;
+            
+            // Show success message
+            successMessage.innerHTML = '<i class="fas fa-check-circle"></i> Profile saved successfully!';
+            successMessage.style.display = 'block';
+            
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                successMessage.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                    successMessage.style.animation = 'slideIn 0.3s ease-out';
+                }, 300);
+            }, 3000);
+            
+            // Switch back to display mode
+            usernameInput.style.display = 'none';
+            usernameDisplay.style.display = 'flex';
+        });
+
+        // Log out functionality
+        logoutBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to log out?')) {
+                // Clear any user session data if you had it
+                // localStorage.removeItem('currentUser'); // If you had user sessions
+                
+                // Redirect to sign-in page
+                window.location.href = 'sign-in.html';
+            }
+        });
+
+        // Handle Enter key in username input
+        usernameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                saveProfileBtn.click();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (cartModal.style.display === 'block') {
+                    closeCartModal();
+                }
+                if (profileModal.style.display === 'block') {
+                    closeProfileModal();
+                }
+            }
+        });
+        const userId = <?php echo $_SESSION['user_id']; ?>;
     </script>
 </body>
 </html>

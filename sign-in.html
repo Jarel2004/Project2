@@ -112,7 +112,7 @@
       
       <div id="error-message" class="error-message"></div>
       
-      <form id="signin-form" action="login.php" method="POST">
+      <form id="signin-form" action="php/login.php" method="POST">
         <div class="input">
           <label for="email">Email:</label>
           <input
@@ -179,9 +179,9 @@
         form.style.display = 'none';
         successMessage.style.display = 'block';
         
-        // Redirect to index.html after 2 seconds
+        // Redirect to index.php after 2 seconds
         setTimeout(() => {
-          window.location.href = 'index.html';
+          window.location.href = 'index.php';
         }, 2000);
       });
       

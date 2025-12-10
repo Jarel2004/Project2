@@ -99,29 +99,55 @@ $username = $_SESSION['username'];
             background-color: #e2612d;
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50px;
             cursor: pointer;
             font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .header-btns {
             display: flex;
             gap: 10px;
+            align-items: center;
         }
         
-        /* circle shape profile button */
+        /* Profile button should be round */
         .profile-button {
-            padding: 10px 12px;
-            background-color: #555;
+            background-color: #dcdcdcff;
+            color: #e2612d;
+            border: 1px solid #e2612d;
+            width: 45px;
+            height: 45px;
+            padding: 12px;
             border-radius: 50%;
-            color: white;
-            border: none;
             cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .profile-button:hover {
+            background-color: #e2612d;
+            color: white;
+            
+        }
+        
+        .profile-button .username {
+            font-size: 14px;
+            margin-left: 5px;
         }
         
         .cart-button a {
             color: white;
+            text-decoration: none;
+        }
+        
+        .cart-button a:hover {
             text-decoration: none;
         }
         
@@ -405,7 +431,7 @@ $username = $_SESSION['username'];
         .profile-modal.show .profile-modal-content {
             right: 0;
         }
-
+        
         .profile-close-button {
             position: absolute;
             top: 20px;
@@ -532,7 +558,10 @@ $username = $_SESSION['username'];
         .logout-button:hover {
             background-color: #f0f0f0;
         }
-
+        .username {
+            font-weight: bold;
+            color: #e2612d;
+        }
         /* Success message styles */
         .success-message {
             display: none;
@@ -674,19 +703,17 @@ $username = $_SESSION['username'];
             </ul>
         </nav>
         <div class="header-btns">
-            <button class="cart-button"><a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a></button>
-            <button class="profile-button" id="profile-btn"><i class="fas fa-user"></i></button>
-        </div>
-        <div class="header-btns">
-            <span>Welcome, <?php echo htmlspecialchars($username); ?>!</span>
-            <button onclick="window.location.href='logout.php'">Logout</button>
+            <button class="cart-button"><a href="cart.php"><i class="fas fa-shopping-cart"></i></a></button>
+            <button class="profile-button" id="profile-btn">
+                <i class="fas fa-user"></i>
+            </button>
         </div>
     </header>
 
     <main>
         <section id="hero-section">
             <div class="hero-text">
-                <h2>Welcome to Karu-mata</h2>
+                <h2>Welcome to Karu-mata <span class="username"><?php echo htmlspecialchars(ucfirst($username)); ?></span></h2>
                 <p>Your favorite place for delicious sushi and sizzling dishes.</p>
                 <a href="#menu" class="btn">Explore Our Menu</a>
             </div>
@@ -917,13 +944,16 @@ $username = $_SESSION['username'];
     </div>
 
     <!-- Success Message -->
-    <div class="success-message">
+    <div class="success-message" id="success-message">
         <i class="fas fa-check-circle"></i> Item added to cart successfully!
     </div>
 
     <script>
-        let currentProductId = 0; 
-        // Existing cart modal functionality
+        // Cart functionality
+        let currentProductId = 0;
+        let currentPrice = 0;
+        let quantity = 1;
+        
         const foodCards = document.querySelectorAll('.food-card');
         const cartModal = document.querySelector('.modal-add-to-cart');
         const closeButton = cartModal.querySelector('.close-button');
@@ -933,12 +963,7 @@ $username = $_SESSION['username'];
         const decreaseBtn = cartModal.querySelector('.decrease-qty');
         const increaseBtn = cartModal.querySelector('.increase-qty');
         const totalPriceDiv = cartModal.querySelector('.total-price');
-        const successMessage = document.querySelector('.success-message');
-
-        let currentPrice = 0;
-        let quantity = 1;
-        const foodCards = document.querySelectorAll('.food-card');
-        const cartModal = document.querySelector('.modal-add-to-cart');
+        const successMessage = document.getElementById('success-message');
 
         // Function to open cart modal with animation
         function openCartModal() {
@@ -957,32 +982,31 @@ $username = $_SESSION['username'];
         }
 
         // Open cart modal when food card is clicked
-        // Open modal when food card is clicked
-foodCards.forEach(card => {
-    card.addEventListener('click', () => {
-        const foodImg = card.querySelector('.food-img img').src;
-        const foodTitle = card.querySelector('.food-details h3').innerText;
-        const foodDesc = card.querySelector('.food-details p').innerText;
-        const foodPriceText = card.querySelector('.food-details .price').innerText;
-        
-        // Extract price number from "Price: ₱145" format
-        currentPrice = parseInt(foodPriceText.replace(/[^0-9]/g, ''));
-        quantity = 1;
-        
-        // Store product ID - you need to add data-product-id attribute to your HTML
-        currentProductId = card.getAttribute('data-product-id');
-        
-        // Update modal content
-        cartModal.querySelector('.modal-content img').src = foodImg;
-        cartModal.querySelector('.modal-content h3').innerText = foodTitle;
-        cartModal.querySelector('.modal-content p').innerText = foodDesc;
-        cartModal.querySelector('.modal-content .price').innerText = foodPriceText;
-        quantitySpan.innerText = quantity;
-        totalPriceDiv.innerText = `Total: ₱${currentPrice * quantity}`;
+        foodCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const foodImg = card.querySelector('.food-img img').src;
+                const foodTitle = card.querySelector('.food-details h3').innerText;
+                const foodDesc = card.querySelector('.food-details p').innerText;
+                const foodPriceText = card.querySelector('.food-details .price').innerText;
+                
+                // Extract price number from "Price: ₱145" format
+                currentPrice = parseInt(foodPriceText.replace(/[^0-9]/g, ''));
+                quantity = 1;
+                
+                // Store product ID
+                currentProductId = card.getAttribute('data-product-id');
+                
+                // Update modal content
+                cartModal.querySelector('.modal-content img').src = foodImg;
+                cartModal.querySelector('.modal-content h3').innerText = foodTitle;
+                cartModal.querySelector('.modal-content p').innerText = foodDesc;
+                cartModal.querySelector('.modal-content .price').innerText = foodPriceText;
+                quantitySpan.innerText = quantity;
+                totalPriceDiv.innerText = `Total: ₱${currentPrice * quantity}`;
 
-        openCartModal();
-    });
-});
+                openCartModal();
+            });
+        });
 
         // Decrease quantity
         decreaseBtn.addEventListener('click', (e) => {
@@ -1003,55 +1027,42 @@ foodCards.forEach(card => {
         });
 
         // Confirm and add to cart
-        // Confirm and add to cart
-confirmBtn.addEventListener('click', () => {
-    // Get current item details
-    const foodName = cartModal.querySelector('.modal-content h3').innerText;
-    const foodImg = cartModal.querySelector('.modal-content img').src;
-    const foodDesc = cartModal.querySelector('.modal-content p').innerText;
-    
-    // For PHP, we need product ID - you'll need to store it when opening modal
-    // First, let's get the product ID from the clicked food card
-    const productId = currentProductId; // You need to set this when opening modal
-    
-    // If you don't have productId stored, you can get it from image filename or name
-    // For now, let's assume you have a way to get it
-    
-    // Send to PHP backend
-    fetch('add_to_cart.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `product_id=${currentProductId}&quantity=${quantity}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            closeCartModal();
-            
-            // Show success message after modal closes
-            setTimeout(() => {
-                successMessage.style.display = 'block';
-                
-                // Hide success message after 3 seconds
-                setTimeout(() => {
-                    successMessage.style.animation = 'slideOut 0.3s ease-out';
+        confirmBtn.addEventListener('click', () => {
+            fetch('php/add_to_cart.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `product_id=${currentProductId}&quantity=${quantity}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeCartModal();
+                    
+                    // Show success message after modal closes
                     setTimeout(() => {
-                        successMessage.style.display = 'none';
-                        successMessage.style.animation = 'slideIn 0.3s ease-out';
+                        successMessage.innerHTML = '<i class="fas fa-check-circle"></i> Item added to cart successfully!';
+                        successMessage.style.display = 'block';
+                        
+                        // Hide success message after 3 seconds
+                        setTimeout(() => {
+                            successMessage.style.animation = 'slideOut 0.3s ease-out';
+                            setTimeout(() => {
+                                successMessage.style.display = 'none';
+                                successMessage.style.animation = 'slideIn 0.3s ease-out';
+                            }, 300);
+                        }, 3000);
                     }, 300);
-                }, 3000);
-            }, 300);
-        } else {
-            alert('Failed to add to cart: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Failed to add to cart. Please try again.');
-    });
-});
+                } else {
+                    alert('Failed to add to cart: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to add to cart. Please try again.');
+            });
+        });
 
         // Close cart modal when close button is clicked
         closeButton.addEventListener('click', () => {
@@ -1088,8 +1099,9 @@ confirmBtn.addEventListener('click', () => {
                 profileModal.classList.add('show');
             }, 10);
             
-            // Load saved data from localStorage
-            const savedUsername = localStorage.getItem('karumata_username') || 'Guest User';
+            // Load saved data from localStorage, default to PHP session username
+    
+            const savedUsername = localStorage.getItem('karumata_username') || '<?php echo htmlspecialchars(ucfirst($username)); ?>';
             const savedAddress = localStorage.getItem('karumata_address') || '';
             
             usernameDisplay.textContent = savedUsername;
@@ -1158,14 +1170,11 @@ confirmBtn.addEventListener('click', () => {
             usernameDisplay.style.display = 'flex';
         });
 
-        // Log out functionality
+        // Log out functionality - uses your PHP logout script
         logoutBtn.addEventListener('click', () => {
             if (confirm('Are you sure you want to log out?')) {
-                // Clear any user session data if you had it
-                // localStorage.removeItem('currentUser'); // If you had user sessions
-                
-                // Redirect to sign-in page
-                window.location.href = 'sign-in.html';
+                // Redirect to PHP logout script
+                window.location.href = 'php/logout.php';
             }
         });
 
@@ -1187,7 +1196,6 @@ confirmBtn.addEventListener('click', () => {
                 }
             }
         });
-        const userId = <?php echo $_SESSION['user_id']; ?>;
     </script>
 </body>
 </html>

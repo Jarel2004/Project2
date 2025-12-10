@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: sign-in.html");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -580,7 +588,7 @@
             </div>
         </div>
 
-        <button class="back-menu" onclick="window.location.href='index.html'">
+        <button class="back-menu" onclick="window.location.href='index.php'">
             <i class="fa-solid fa-arrow-left"></i> Back to Menu
         </button>
     </header>

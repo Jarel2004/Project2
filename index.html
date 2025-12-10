@@ -89,7 +89,15 @@
             cursor: pointer;
             font-size: 16px;
         }
+        .header-btns {
+            display: flex;
+            gap: 10px;
+        }
         .sign-in-button a {
+            color: white;
+            text-decoration: none;
+        }
+        .cart-button a {
             color: white;
             text-decoration: none;
         }
@@ -457,7 +465,7 @@
             </ul>
         </nav>
         <div class="header-btns">
-            <button class="cart-button"><i class="fas fa-shopping-cart"></i> Cart</button>
+            <button class="cart-button"><a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a></button>
             <button class="sign-in-button"><a href="sign-in.html"><i class="fas fa-user"></i> Sign In</a></button>
         </div>
     </header>
@@ -736,6 +744,39 @@
 
         // Confirm and add to cart
         confirmBtn.addEventListener('click', () => {
+            // Get cart from localStorage or initialize empty array
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            // Get current item details
+            const foodName = modal.querySelector('.modal-content h3').innerText;
+            const foodImg = modal.querySelector('.modal-content img').src;
+            const foodDesc = modal.querySelector('.modal-content p').innerText;
+            
+            // Create item object
+            const item = {
+                name: foodName,
+                price: currentPrice,
+                quantity: quantity,
+                image: foodImg,
+                description: foodDesc,
+                total: currentPrice * quantity
+            };
+            
+            // Check if item already exists in cart
+            const existingItemIndex = cart.findIndex(cartItem => cartItem.name === foodName);
+            
+            if (existingItemIndex > -1) {
+                // Update quantity if item exists
+                cart[existingItemIndex].quantity += quantity;
+                cart[existingItemIndex].total = cart[existingItemIndex].price * cart[existingItemIndex].quantity;
+            } else {
+                // Add new item to cart
+                cart.push(item);
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
             closeModal();
             
             // Show success message after modal closes

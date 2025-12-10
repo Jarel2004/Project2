@@ -387,23 +387,23 @@ ORDER BY o.created_at DESC, oi.product_name;
 -- SAMPLE DATA
 -- ============================================
 
--- Insert sample products (from your products.js)
-INSERT INTO products (product_name, description, price, category) VALUES
-('Chicken Roll', 'Crispy chicken sushi roll.', 145.00, 'sushi'),
-('Hot Roll', 'Deep-fried hot sushi roll.', 149.00, 'sushi'),
-('Mango Sushi', 'Sweet and fresh mango sushi.', 69.00, 'sushi'),
-('Onigiri', 'Japanese rice ball with fillings.', 120.00, 'sushi'),
-('Pork Sisig', 'Crispy sizzling pork sisig.', 129.00, 'sizzling'),
-('Pepper Steak', 'Hot sizzling pepper steak.', 129.00, 'sizzling'),
-('Kimchi Pork', 'Stir-fried pork with kimchi.', 129.00, 'sizzling'),
-('Teriyaki', 'Sweet and savory teriyaki meal.', 129.00, 'sizzling'),
-('Poke Bowl', 'Fresh poke bowl goodness.', 129.00, 'rice-bowls'),
-('Bibimbap', 'Mixed Korean rice bowl with veggies.', 129.00, 'rice-bowls'),
-('Hot & Spicy Chicken', 'Spicy chicken meal with drinks.', 110.00, 'best-seller');
-
--- Insert a sample user
-INSERT INTO users (username, email, password_hash, delivery_address) VALUES
-('john_doe', 'john@example.com', '$2y$10$YourHashedPasswordHere', '123 Main St, Manila, Philippines');
+-- Insert your products (from your database.sql)
+INSERT INTO products (product_name, description, price, image_url, category) VALUES
+('Chicken Roll', 'Delicious chicken sushi roll with avocado and cucumber.', 145.00, 'src/Chicken_Roll.jpeg', 'sushi'),
+('Hot Roll', 'Delicious hot sushi roll with spicy tuna and avocado.', 149.00, 'src/Hot_Roll.jpeg', 'sushi'),
+('Mango Sushi', 'Delicious mango sushi roll with sweet mango and sticky rice.', 69.00, 'src/Mango.jpeg', 'sushi'),
+('Onigiri', 'Delicious onigiri rice balls with various fillings.', 120.00, 'src/Onigiri.jpeg', 'sushi'),
+('Kimbap', 'Korean rice rolls with vegetables and meat.', 89.00, 'src/Bibimbap.jpeg', 'sushi'),
+('Pork Sisig', 'Delicious pork sisig with onions and chili.', 129.00, 'src/Pork_Sisig.jpeg', 'sizzling'),
+('Pepper Steak', 'Delicious pepper steak with black pepper sauce.', 129.00, 'src/PepperSteak.jpeg', 'sizzling'),
+('Kimchi Pork', 'Stir-fried pork with kimchi.', 129.00, 'src/Kimchi_Pork.jpeg', 'sizzling'),
+('Teriyaki', 'Sweet and savory teriyaki meal.', 129.00, 'src/TeriyakiSizzling.jpeg', 'sizzling'),
+('Spicy Garlic Shrimp', 'Shrimp cooked in spicy garlic sauce.', 129.00, 'src/SpicyGarlicShrimp.jpeg', 'sizzling'),
+('Pokebowl', 'Fresh poke bowl goodness.', 129.00, 'src/Pokebowl.jpeg', 'bowls'),
+('Bibimbap', 'Mixed Korean rice bowl with veggies.', 129.00, 'src/Bibimbap.jpeg', 'bowls'),
+('Stirfried Fishcake sweet & spicy', 'Sweet & spicy stir-fried fishcake.', 100.00, 'src/Stirfried_Fishcake.jpeg', 'appetizers'),
+('Porkchop w/rice & salad', 'Porkchop with rice & salad.', 79.00, 'src/Porkchop.jpeg', 'meals'),
+('Hot & spicy chicken', 'Spicy chicken meal with drinks.', 110.00, 'src/H&S_Chicken.jpeg', 'meals');
 
 -- ============================================
 -- INDEXES for optimization

@@ -1094,23 +1094,25 @@ $username = $_SESSION['username'];
 
         // Function to open profile modal with slide animation
         // Function to open profile modal with slide animation
-        function openProfileModal() {
-            profileModal.style.display = 'block';
-            setTimeout(() => {
-                profileModal.classList.add('show');
-            }, 10);
-            
-            // Load data - ALWAYS use PHP session username, only address from localStorage
-            const phpUsername = '<?php echo htmlspecialchars(ucfirst($username)); ?>';
-            const savedAddress = localStorage.getItem('karumata_address') || '';
-            
-            usernameDisplay.textContent = phpUsername;
-            addressInput.value = savedAddress;
-            
-            // Hide input field by default
-            usernameInput.style.display = 'none';
-            usernameDisplay.style.display = 'flex';
-        }
+        // Function to open profile modal with slide animation
+function openProfileModal() {
+    profileModal.style.display = 'block';
+    setTimeout(() => {
+        profileModal.classList.add('show');
+    }, 10);
+    
+    // Load data - ALWAYS use PHP session username, address from localStorage
+    const phpUsername = '<?php echo htmlspecialchars(ucfirst($username)); ?>';
+    const savedAddress = localStorage.getItem('karumata_address') || '';
+    
+    usernameDisplay.textContent = phpUsername;
+    usernameInput.value = phpUsername; // Set input value too
+    addressInput.value = savedAddress;
+    
+    // Hide input field by default
+    usernameInput.style.display = 'none';
+    usernameDisplay.style.display = 'flex';
+}
 
         // Function to close profile modal with slide animation
         function closeProfileModal() {
@@ -1141,19 +1143,33 @@ $username = $_SESSION['username'];
         });
 
         // Save profile changes
-        saveProfileBtn.addEventListener('click', () => {
-            const newUsername = usernameInput.value.trim() || usernameDisplay.textContent;
-            const newAddress = addressInput.value.trim();
-            
-            // Save to localStorage
-            localStorage.setItem('karumata_username', newUsername);
-            localStorage.setItem('karumata_address', newAddress);
-            
+        // Save profile changes
+saveProfileBtn.addEventListener('click', () => {
+    const newUsername = usernameInput.value.trim() || usernameDisplay.textContent;
+    const newAddress = addressInput.value.trim();
+    
+    // Send data to PHP to update in database
+    fetch('php/update_profile.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `username=${encodeURIComponent(newUsername)}&address=${encodeURIComponent(newAddress)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
             // Update display
             usernameDisplay.textContent = newUsername;
             
+            // Update PHP session via refresh or update welcome message
+            document.querySelector('.username').textContent = newUsername;
+            
+            // Save address to localStorage for cart.php (optional)
+            localStorage.setItem('karumata_address', newAddress);
+            
             // Show success message
-            successMessage.innerHTML = '<i class="fas fa-check-circle"></i> Profile saved successfully!';
+            successMessage.innerHTML = '<i class="fas fa-check-circle"></i> ' + data.message;
             successMessage.style.display = 'block';
             
             // Hide success message after 3 seconds
@@ -1168,7 +1184,15 @@ $username = $_SESSION['username'];
             // Switch back to display mode
             usernameInput.style.display = 'none';
             usernameDisplay.style.display = 'flex';
-        });
+        } else {
+            alert('Failed to save: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to save profile. Please try again.');
+    });
+});
 
         // Log out functionality - uses your PHP logout script
         logoutBtn.addEventListener('click', () => {

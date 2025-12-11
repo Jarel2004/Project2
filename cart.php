@@ -698,318 +698,418 @@ if (!isset($_SESSION['user_id'])) {
     </div>
 
     <script>
-        // Get cart from localStorage
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        
-        const cartItemsContainer = document.getElementById('cart-items');
-        const cartEmptyDiv = document.querySelector('.cart-empty');
-        const cartCountSpan = document.getElementById('cart-count');
-        const subtotalSpan = document.getElementById('sum-subtotal');
-        const deliverySpan = document.getElementById('sum-delivery');
-        const serviceSpan = document.getElementById('sum-service');
-        const totalSpan = document.getElementById('sum-total');
-        const clearCartBtn = document.getElementById('clear-cart-btn');
-        const checkoutBtn = document.querySelector('.checkout-btn');
-        const checkoutModal = document.getElementById('checkout-modal');
-        const selectAllCheckbox = document.getElementById('select-all-items');
-        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+    // Get cart from database
+    let cart = [];
+    
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartEmptyDiv = document.querySelector('.cart-empty');
+    const cartCountSpan = document.getElementById('cart-count');
+    const subtotalSpan = document.getElementById('sum-subtotal');
+    const deliverySpan = document.getElementById('sum-delivery');
+    const serviceSpan = document.getElementById('sum-service');
+    const totalSpan = document.getElementById('sum-total');
+    const clearCartBtn = document.getElementById('clear-cart-btn');
+    const checkoutBtn = document.querySelector('.checkout-btn');
+    const checkoutModal = document.getElementById('checkout-modal');
+    const selectAllCheckbox = document.getElementById('select-all-items');
+    const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+    const addressText = document.getElementById('address-text');
 
-        const DELIVERY_FEE = 50;
-        const SERVICE_FEE = 20;
-        
-        // Store selected items for checkout
-        let selectedItems = [];
+    const DELIVERY_FEE = 50;
+    const SERVICE_FEE = 20;
+    
+    // Store selected items for checkout
+    let selectedItems = [];
 
-        function updateCart() {
-            // Clear container
-            cartItemsContainer.innerHTML = '';
+    // Fetch cart from database
+    async function fetchCartFromDatabase() {
+        try {
+            const response = await fetch('php/get_cart.php');
+            const data = await response.json();
             
-            // Check if cart is empty
-            if (cart.length === 0) {
-                cartEmptyDiv.style.display = 'block';
-                cartCountSpan.textContent = '0 items';
-                subtotalSpan.textContent = '₱0.00';
-                deliverySpan.textContent = `₱${DELIVERY_FEE.toFixed(2)}`;
-                serviceSpan.textContent = `₱${SERVICE_FEE.toFixed(2)}`;
-                totalSpan.textContent = `₱${(DELIVERY_FEE + SERVICE_FEE).toFixed(2)}`;
-                return;
+            if (data.error) {
+                console.error(data.error);
+                return [];
             }
             
-            cartEmptyDiv.style.display = 'none';
-            
-            // Update cart count
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            cartCountSpan.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
-            
-            // Calculate subtotal
-            let subtotal = 0;
-            
-            // Display each cart item
-            cart.forEach((item, index) => {
-                const itemTotal = item.price * item.quantity;
-                subtotal += itemTotal;
-                
-                const cartItem = document.createElement('div');
-                cartItem.classList.add('cart-item');
-                cartItem.innerHTML = `
-                    <img src="${item.image}" alt="${item.name}" />
-                    <div class="item-details">
-                        <h4>${item.name}</h4>
-                        <p>${item.description || 'Delicious food item'}</p>
-                        <p class="item-price">₱${item.price.toFixed(2)} each</p>
-                        <p style="font-weight: bold; color: #272727;">Total: ₱${itemTotal.toFixed(2)}</p>
-                    </div>
-                    <div class="item-actions">
-                        <div class="qty-controls">
-                            <button onclick="decreaseQuantity(${index})">-</button>
-                            <span>${item.quantity}</span>
-                            <button onclick="increaseQuantity(${index})">+</button>
-                        </div>
-                        <button class="remove-btn" onclick="removeItem(${index})">
-                            <i class="fa-solid fa-trash"></i> Remove
-                        </button>
-                    </div>
-                `;
-                cartItemsContainer.appendChild(cartItem);
+            // Convert database response to the format expected by updateCart()
+            return data.items.map(item => ({
+                id: item.cart_item_id,
+                product_id: item.product_id,
+                name: item.product_name,
+                price: parseFloat(item.price),
+                quantity: item.quantity,
+                image: item.image_url || 'src/default_food.jpg',
+                description: item.product_name,
+                total_price: parseFloat(item.total_price)
+            }));
+        } catch (error) {
+            console.error('Error fetching cart:', error);
+            return [];
+        }
+    }
+
+    // Update quantity in database
+    async function updateQuantityInDatabase(cartItemId, newQuantity) {
+        try {
+            const response = await fetch('php/update_cart.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `cart_item_id=${cartItemId}&quantity=${newQuantity}`
             });
-            
-            // Update summary
-            const deliveryFee = DELIVERY_FEE;
-            const serviceFee = SERVICE_FEE;
-            const total = subtotal + deliveryFee + serviceFee;
-            
-            subtotalSpan.textContent = `₱${subtotal.toFixed(2)}`;
-            deliverySpan.textContent = `₱${deliveryFee.toFixed(2)}`;
-            serviceSpan.textContent = `₱${serviceFee.toFixed(2)}`;
-            totalSpan.textContent = `₱${total.toFixed(2)}`;
-            
-            // Initialize selected items to all items
-            selectedItems = cart.map(item => ({...item, selected: true}));
+            return await response.json();
+        } catch (error) {
+            console.error('Error updating quantity:', error);
+            return { success: false, message: 'Network error' };
         }
+    }
 
-        function increaseQuantity(index) {
-            cart[index].quantity++;
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCart();
-            // Update selected items if modal is open
-            if (checkoutModal.style.display === 'block') {
-                showCartSummary();
-            }
+    // Remove item from database
+    async function removeItemFromDatabase(cartItemId) {
+        try {
+            const response = await fetch('php/remove_from_cart.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `cart_item_id=${cartItemId}`
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('Error removing item:', error);
+            return { success: false, message: 'Network error' };
         }
+    }
 
-        function decreaseQuantity(index) {
-            if (cart[index].quantity > 1) {
-                cart[index].quantity--;
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCart();
+    // Clear cart in database
+    async function clearCartInDatabase() {
+        try {
+            const response = await fetch('php/clear_cart.php', {
+                method: 'POST'
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('Error clearing cart:', error);
+            return { success: false, message: 'Network error' };
+        }
+    }
+
+    // Load address from localStorage
+    function loadAddress() {
+        const savedAddress = localStorage.getItem('karumata_address');
+        if (savedAddress && savedAddress.trim() !== '') {
+            addressText.textContent = savedAddress;
+        } else {
+            addressText.textContent = 'No address set yet. Update in your profile.';
+        }
+    }
+
+    async function updateCart() {
+        // Fetch latest cart from database
+        cart = await fetchCartFromDatabase();
+        
+        // Clear container
+        cartItemsContainer.innerHTML = '';
+        
+        // Check if cart is empty
+        if (cart.length === 0) {
+            cartEmptyDiv.style.display = 'block';
+            cartCountSpan.textContent = '0 items';
+            subtotalSpan.textContent = '₱0.00';
+            deliverySpan.textContent = `₱${DELIVERY_FEE.toFixed(2)}`;
+            serviceSpan.textContent = `₱${SERVICE_FEE.toFixed(2)}`;
+            totalSpan.textContent = `₱${(DELIVERY_FEE + SERVICE_FEE).toFixed(2)}`;
+            return;
+        }
+        
+        cartEmptyDiv.style.display = 'none';
+        
+        // Update cart count
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCountSpan.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+        
+        // Calculate subtotal
+        let subtotal = 0;
+        
+        // Display each cart item
+        cart.forEach((item, index) => {
+            const itemTotal = item.price * item.quantity;
+            subtotal += itemTotal;
+            
+            const cartItem = document.createElement('div');
+            cartItem.classList.add('cart-item');
+            cartItem.innerHTML = `
+                <img src="${item.image}" alt="${item.name}" />
+                <div class="item-details">
+                    <h4>${item.name}</h4>
+                    <p>${item.description || 'Delicious food item'}</p>
+                    <p class="item-price">₱${item.price.toFixed(2)} each</p>
+                    <p style="font-weight: bold; color: #272727;">Total: ₱${itemTotal.toFixed(2)}</p>
+                </div>
+                <div class="item-actions">
+                    <div class="qty-controls">
+                        <button onclick="decreaseQuantity(${item.id})">-</button>
+                        <span>${item.quantity}</span>
+                        <button onclick="increaseQuantity(${item.id})">+</button>
+                    </div>
+                    <button class="remove-btn" onclick="removeItem(${item.id})">
+                        <i class="fa-solid fa-trash"></i> Remove
+                    </button>
+                </div>
+            `;
+            cartItemsContainer.appendChild(cartItem);
+        });
+        
+        // Update summary
+        const deliveryFee = DELIVERY_FEE;
+        const serviceFee = SERVICE_FEE;
+        const total = subtotal + deliveryFee + serviceFee;
+        
+        subtotalSpan.textContent = `₱${subtotal.toFixed(2)}`;
+        deliverySpan.textContent = `₱${deliveryFee.toFixed(2)}`;
+        serviceSpan.textContent = `₱${serviceFee.toFixed(2)}`;
+        totalSpan.textContent = `₱${total.toFixed(2)}`;
+        
+        // Initialize selected items to all items
+        selectedItems = cart.map(item => ({...item, selected: true}));
+    }
+
+    async function increaseQuantity(cartItemId) {
+        const item = cart.find(item => item.id === cartItemId);
+        if (item) {
+            const newQuantity = item.quantity + 1;
+            const result = await updateQuantityInDatabase(cartItemId, newQuantity);
+            if (result.success) {
+                await updateCart();
                 // Update selected items if modal is open
                 if (checkoutModal.style.display === 'block') {
                     showCartSummary();
                 }
+            } else {
+                alert('Failed to update quantity: ' + result.message);
             }
         }
+    }
 
-        function removeItem(index) {
-            if (confirm('Are you sure you want to remove this item?')) {
-                cart.splice(index, 1);
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCart();
+    async function decreaseQuantity(cartItemId) {
+        const item = cart.find(item => item.id === cartItemId);
+        if (item && item.quantity > 1) {
+            const newQuantity = item.quantity - 1;
+            const result = await updateQuantityInDatabase(cartItemId, newQuantity);
+            if (result.success) {
+                await updateCart();
                 // Update selected items if modal is open
                 if (checkoutModal.style.display === 'block') {
                     showCartSummary();
                 }
+            } else {
+                alert('Failed to update quantity: ' + result.message);
             }
         }
+    }
 
-        // Clear cart button
-        clearCartBtn.addEventListener('click', () => {
-            if (cart.length === 0) {
-                alert('Your cart is already empty!');
-                return;
+    async function removeItem(cartItemId) {
+        if (confirm('Are you sure you want to remove this item?')) {
+            const result = await removeItemFromDatabase(cartItemId);
+            if (result.success) {
+                await updateCart();
+                // Update selected items if modal is open
+                if (checkoutModal.style.display === 'block') {
+                    showCartSummary();
+                }
+            } else {
+                alert('Failed to remove item: ' + result.message);
             }
-            
-            if (confirm('Are you sure you want to clear your entire cart?')) {
-                cart = [];
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCart();
+        }
+    }
+
+    // Clear cart button
+    clearCartBtn.addEventListener('click', async () => {
+        if (cart.length === 0) {
+            alert('Your cart is already empty!');
+            return;
+        }
+        
+        if (confirm('Are you sure you want to clear your entire cart?')) {
+            const result = await clearCartInDatabase();
+            if (result.success) {
+                await updateCart();
                 // Close modal if open
                 checkoutModal.style.display = 'none';
+            } else {
+                alert('Failed to clear cart: ' + result.message);
             }
-        });
-
-        // Show proceed to checkout modal
-        checkoutBtn.addEventListener('click', () => {
-            if (cart.length === 0) {
-                alert('Your cart is empty! Add items to checkout.');
-                return;
-            }
-            
-            showCartSummary();
-            checkoutModal.style.display = 'block';
-        });
-
-        // Close modal functions
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
         }
+    });
 
-        // Close modal when clicking outside
-        window.addEventListener('click', (event) => {
-            if (event.target === checkoutModal) {
-                checkoutModal.style.display = 'none';
-            }
+    // Show proceed to checkout modal
+    checkoutBtn.addEventListener('click', () => {
+        if (cart.length === 0) {
+            alert('Your cart is empty! Add items to checkout.');
+            return;
+        }
+        
+        showCartSummary();
+        checkoutModal.style.display = 'block';
+    });
+
+    // Close modal functions
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (event) => {
+        if (event.target === checkoutModal) {
+            checkoutModal.style.display = 'none';
+        }
+    });
+
+    // Show cart summary in modal with checkboxes
+    function showCartSummary() {
+        const modalItemList = document.getElementById('modal-item-list');
+        const noItemsSelected = document.getElementById('no-items-selected');
+        modalItemList.innerHTML = '';
+        
+        // If cart is empty, show message
+        if (cart.length === 0) {
+            noItemsSelected.style.display = 'block';
+            return;
+        }
+        
+        noItemsSelected.style.display = 'none';
+        
+        // Update selected items to match current cart
+        selectedItems = cart.map(item => {
+            const existingSelected = selectedItems.find(selected => 
+                selected.id === item.id);
+            return {
+                ...item,
+                selected: existingSelected ? existingSelected.selected : true
+            };
         });
-
-        // Show cart summary in modal with checkboxes
-        function showCartSummary() {
-            const modalItemList = document.getElementById('modal-item-list');
-            const noItemsSelected = document.getElementById('no-items-selected');
-            modalItemList.innerHTML = '';
+        
+        // Display items with checkboxes
+        selectedItems.forEach((item, index) => {
+            const listItem = document.createElement('div');
+            listItem.classList.add('modal-item');
+            const itemTotal = item.price * item.quantity;
             
-            // If cart is empty, show message
-            if (cart.length === 0) {
-                noItemsSelected.style.display = 'block';
-                return;
-            }
-            
-            noItemsSelected.style.display = 'none';
-            
-            // Update selected items to match current cart
-            selectedItems = cart.map(item => {
-                const existingSelected = selectedItems.find(selected => 
-                    selected.name === item.name && selected.price === item.price);
-                return {
-                    ...item,
-                    selected: existingSelected ? existingSelected.selected : true
-                };
-            });
-            
-            // Display items with checkboxes
-            selectedItems.forEach((item, index) => {
-                const listItem = document.createElement('div');
-                listItem.classList.add('modal-item');
-                const itemTotal = item.price * item.quantity;
-                
-                listItem.innerHTML = `
-                    <input type="checkbox" class="item-checkbox" data-index="${index}" 
-                           ${item.selected ? 'checked' : ''}>
-                    <img src="${item.image}" alt="${item.name}" class="modal-item-image" />
-                    <div class="modal-item-details">
-                        <h4>${item.name}</h4>
-                        <p>${item.description || 'Delicious food item'}</p>
-                        <p class="modal-price">₱${item.price.toFixed(2)} × ${item.quantity}</p>
-                        <p class="modal-total">Total: ₱${itemTotal.toFixed(2)}</p>
-                    </div>
-                `;
-                modalItemList.appendChild(listItem);
-            });
-            
-            // Add event listeners to checkboxes
-            document.querySelectorAll('.item-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    const index = parseInt(this.dataset.index);
-                    selectedItems[index].selected = this.checked;
+            listItem.innerHTML = `
+                <input type="checkbox" class="item-checkbox" data-id="${item.id}" 
+                       ${item.selected ? 'checked' : ''}>
+                <img src="${item.image}" alt="${item.name}" class="modal-item-image" />
+                <div class="modal-item-details">
+                    <h4>${item.name}</h4>
+                    <p>${item.description || 'Delicious food item'}</p>
+                    <p class="modal-price">₱${item.price.toFixed(2)} × ${item.quantity}</p>
+                    <p class="modal-total">Total: ₱${itemTotal.toFixed(2)}</p>
+                </div>
+            `;
+            modalItemList.appendChild(listItem);
+        });
+        
+        // Add event listeners to checkboxes
+        document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const id = parseInt(this.dataset.id);
+                const itemIndex = selectedItems.findIndex(item => item.id === id);
+                if (itemIndex !== -1) {
+                    selectedItems[itemIndex].selected = this.checked;
                     updateModalSummary();
                     updateSelectAllCheckbox();
-                });
-            });
-            
-            // Add event listener to select all checkbox
-            selectAllCheckbox.addEventListener('change', function() {
-                const isChecked = this.checked;
-                selectedItems.forEach(item => {
-                    item.selected = isChecked;
-                });
-                
-                // Update all checkboxes
-                document.querySelectorAll('.item-checkbox').forEach(checkbox => {
-                    checkbox.checked = isChecked;
-                });
-                
-                updateModalSummary();
-            });
-            
-            // Initialize select all checkbox
-            updateSelectAllCheckbox();
-            updateModalSummary();
-        }
-        
-        function updateSelectAllCheckbox() {
-            const allSelected = selectedItems.length > 0 && 
-                               selectedItems.every(item => item.selected);
-            const someSelected = selectedItems.some(item => item.selected);
-            
-            selectAllCheckbox.checked = allSelected;
-            selectAllCheckbox.indeterminate = !allSelected && someSelected;
-        }
-        
-        function updateModalSummary() {
-            // Calculate subtotal of selected items only
-            let subtotal = 0;
-            let hasSelectedItems = false;
-            
-            selectedItems.forEach(item => {
-                if (item.selected) {
-                    subtotal += item.price * item.quantity;
-                    hasSelectedItems = true;
                 }
             });
+        });
+        
+        // Add event listener to select all checkbox
+        selectAllCheckbox.addEventListener('change', function() {
+            const isChecked = this.checked;
+            selectedItems.forEach(item => {
+                item.selected = isChecked;
+            });
             
-            const noItemsSelected = document.getElementById('no-items-selected');
+            // Update all checkboxes
+            document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
             
-            if (!hasSelectedItems) {
-                noItemsSelected.style.display = 'block';
-                modalConfirmBtn.disabled = true;
-                modalConfirmBtn.style.opacity = '0.5';
-                modalConfirmBtn.style.cursor = 'not-allowed';
-            } else {
-                noItemsSelected.style.display = 'none';
-                modalConfirmBtn.disabled = false;
-                modalConfirmBtn.style.opacity = '1';
-                modalConfirmBtn.style.cursor = 'pointer';
+            updateModalSummary();
+        });
+        
+        // Initialize select all checkbox
+        updateSelectAllCheckbox();
+        updateModalSummary();
+    }
+    
+    function updateSelectAllCheckbox() {
+        const allSelected = selectedItems.length > 0 && 
+                           selectedItems.every(item => item.selected);
+        const someSelected = selectedItems.some(item => item.selected);
+        
+        selectAllCheckbox.checked = allSelected;
+        selectAllCheckbox.indeterminate = !allSelected && someSelected;
+    }
+    
+    function updateModalSummary() {
+        // Calculate subtotal of selected items only
+        let subtotal = 0;
+        let hasSelectedItems = false;
+        
+        selectedItems.forEach(item => {
+            if (item.selected) {
+                subtotal += item.price * item.quantity;
+                hasSelectedItems = true;
             }
-            
-            // Update modal summary
-            const deliveryFee = hasSelectedItems ? DELIVERY_FEE : 0;
-            const serviceFee = hasSelectedItems ? SERVICE_FEE : 0;
-            const total = subtotal + deliveryFee + serviceFee;
-            
-            document.getElementById('modal-subtotal').textContent = `₱${subtotal.toFixed(2)}`;
-            document.getElementById('modal-delivery').textContent = `₱${deliveryFee.toFixed(2)}`;
-            document.getElementById('modal-service').textContent = `₱${serviceFee.toFixed(2)}`;
-            document.getElementById('modal-total').textContent = `₱${total.toFixed(2)}`;
+        });
+        
+        const noItemsSelected = document.getElementById('no-items-selected');
+        
+        if (!hasSelectedItems) {
+            noItemsSelected.style.display = 'block';
+            modalConfirmBtn.disabled = true;
+            modalConfirmBtn.style.opacity = '0.5';
+            modalConfirmBtn.style.cursor = 'not-allowed';
+        } else {
+            noItemsSelected.style.display = 'none';
+            modalConfirmBtn.disabled = false;
+            modalConfirmBtn.style.opacity = '1';
+            modalConfirmBtn.style.cursor = 'pointer';
         }
         
-        // Confirm order button
-        modalConfirmBtn.addEventListener('click', () => {
-            // Get only selected items
-            const itemsToCheckout = selectedItems.filter(item => item.selected);
-            
-            if (itemsToCheckout.length === 0) {
-                alert('Please select at least one item to checkout.');
-                return;
-            }
-            
-            // Here you would typically send the order to a server
-            alert(`Order confirmed for ${itemsToCheckout.length} item(s)! Total: ${document.getElementById('modal-total').textContent}`);
-            
-            // Remove selected items from cart
-            const itemsToKeep = selectedItems.filter(item => !item.selected);
-            cart = itemsToKeep.map(item => ({
-                name: item.name,
-                price: item.price,
-                quantity: item.quantity,
-                image: item.image,
-                description: item.description
-            }));
-            
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCart();
-            closeModal('checkout-modal');
-        });
+        // Update modal summary
+        const deliveryFee = hasSelectedItems ? DELIVERY_FEE : 0;
+        const serviceFee = hasSelectedItems ? SERVICE_FEE : 0;
+        const total = subtotal + deliveryFee + serviceFee;
+        
+        document.getElementById('modal-subtotal').textContent = `₱${subtotal.toFixed(2)}`;
+        document.getElementById('modal-delivery').textContent = `₱${deliveryFee.toFixed(2)}`;
+        document.getElementById('modal-service').textContent = `₱${serviceFee.toFixed(2)}`;
+        document.getElementById('modal-total').textContent = `₱${total.toFixed(2)}`;
+    }
+    
+    // Confirm order button (You'll need to implement this separately)
+    modalConfirmBtn.addEventListener('click', () => {
+        // Get only selected items
+        const itemsToCheckout = selectedItems.filter(item => item.selected);
+        
+        if (itemsToCheckout.length === 0) {
+            alert('Please select at least one item to checkout.');
+            return;
+        }
+        
+        alert(`Order confirmed for ${itemsToCheckout.length} item(s)! Total: ${document.getElementById('modal-total').textContent}`);
+        
+        // Note: For full implementation, you'd need to create checkout.php
+        // to process the order and remove items from cart
+        closeModal('checkout-modal');
+    });
 
-        // Initialize cart display
-        updateCart();
-    </script>
+    // Initialize cart display and address
+    updateCart();
+    loadAddress();
+</script>
 </body>
 </html>

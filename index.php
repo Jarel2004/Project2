@@ -747,7 +747,7 @@ $username = $_SESSION['username'];
             </ul>
         </nav>
         <div class="header-btns">
-            <button class="cart-button"><a href="cart.php"><i class="fas fa-shopping-cart"></i></a></button>
+            <button class="cart-button"><a href="cart.php" target="_blank"><i class="fas fa-shopping-cart"></i></a></button>
             <button class="profile-button" id="profile-btn">
                 <i class="fas fa-user"></i>
             </button>
@@ -1163,13 +1163,31 @@ function openProfileModal() {
         profileModal.classList.add('show');
     }, 10);
     
-    // Load data - ALWAYS use PHP session username, address from localStorage
-    const phpUsername = '<?php echo htmlspecialchars(ucfirst($username)); ?>';
-    const savedAddress = localStorage.getItem('karumata_address') || '';
-    
-    usernameDisplay.textContent = phpUsername;
-    usernameInput.value = phpUsername; // Set input value too
-    addressInput.value = savedAddress;
+    // Fetch current profile data from database
+    fetch('php/update_profile.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                usernameDisplay.textContent = data.username;
+                usernameInput.value = data.username;
+                addressInput.value = data.address || '';
+                
+                // Save address to localStorage for cart.php
+                if (data.address) {
+                    localStorage.setItem('karumata_address', data.address);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error loading profile:', error);
+            // Fallback to session data
+            const phpUsername = '<?php echo htmlspecialchars(ucfirst($username)); ?>';
+            const savedAddress = localStorage.getItem('karumata_address') || '';
+            
+            usernameDisplay.textContent = phpUsername;
+            usernameInput.value = phpUsername;
+            addressInput.value = savedAddress;
+        });
     
     // Hide input field by default
     usernameInput.style.display = 'none';
@@ -1207,8 +1225,13 @@ function openProfileModal() {
         // Save profile changes
         // Save profile changes
 saveProfileBtn.addEventListener('click', () => {
-    const newUsername = usernameInput.value.trim() || usernameDisplay.textContent;
+    const newUsername = usernameInput.value.trim();
     const newAddress = addressInput.value.trim();
+    
+    if (!newUsername) {
+        alert('Username cannot be empty');
+        return;
+    }
     
     // Send data to PHP to update in database
     fetch('php/update_profile.php', {
@@ -1222,13 +1245,15 @@ saveProfileBtn.addEventListener('click', () => {
     .then(data => {
         if (data.success) {
             // Update display
-            usernameDisplay.textContent = newUsername;
+            usernameDisplay.textContent = data.new_username || newUsername;
             
-            // Update PHP session via refresh or update welcome message
-            document.querySelector('.username').textContent = newUsername;
+            // Update welcome message on page
+            document.querySelector('.username').textContent = data.new_username || newUsername;
             
-            // Save address to localStorage for cart.php (optional)
-            localStorage.setItem('karumata_address', newAddress);
+            // Save address to localStorage for cart.php
+            if (data.new_address || newAddress) {
+                localStorage.setItem('karumata_address', data.new_address || newAddress);
+            }
             
             // Show success message
             successMessage.innerHTML = '<i class="fas fa-check-circle"></i> ' + data.message;

@@ -648,7 +648,7 @@ if (!isset($_SESSION['user_id'])) {
 
             <button class="checkout-btn">Proceed to Checkout</button>
             <button class="clear-btn" id="clear-cart-btn">Clear Cart</button>
-            <button class="shop-btn" onclick="window.location.href='index.html'">
+            <button class="shop-btn" onclick="window.location.href='index.php'">
                 <i class="fa-solid fa-store"></i> Continue Shopping
             </button>
         </div>
@@ -797,7 +797,28 @@ if (!isset($_SESSION['user_id'])) {
     }
 
     // Load address from localStorage
-    function loadAddress() {
+// Load address from database
+async function loadAddress() {
+    try {
+        const response = await fetch('php/update_profile.php');
+        const data = await response.json();
+        
+        if (data.success && data.address) {
+            addressText.textContent = data.address;
+            // Also save to localStorage for consistency
+            localStorage.setItem('karumata_address', data.address);
+        } else {
+            // Fallback to localStorage
+            const savedAddress = localStorage.getItem('karumata_address');
+            if (savedAddress && savedAddress.trim() !== '') {
+                addressText.textContent = savedAddress;
+            } else {
+                addressText.textContent = 'No address set yet. Update in your profile.';
+            }
+        }
+    } catch (error) {
+        console.error('Error loading address:', error);
+        // Fallback to localStorage
         const savedAddress = localStorage.getItem('karumata_address');
         if (savedAddress && savedAddress.trim() !== '') {
             addressText.textContent = savedAddress;
@@ -805,6 +826,7 @@ if (!isset($_SESSION['user_id'])) {
             addressText.textContent = 'No address set yet. Update in your profile.';
         }
     }
+}
 
     async function updateCart() {
         // Fetch latest cart from database
@@ -1091,21 +1113,94 @@ if (!isset($_SESSION['user_id'])) {
     }
     
     // Confirm order button (You'll need to implement this separately)
-    modalConfirmBtn.addEventListener('click', () => {
-        // Get only selected items
-        const itemsToCheckout = selectedItems.filter(item => item.selected);
+    // Confirm order button - UPDATED TO CALL PHP
+modalConfirmBtn.addEventListener('click', async () => {
+    // Get only selected items
+    const itemsToCheckout = selectedItems.filter(item => item.selected);
+    
+    if (itemsToCheckout.length === 0) {
+        alert('Please select at least one item to checkout.');
+        return;
+    }
+    
+    // Show loading state
+    modalConfirmBtn.disabled = true;
+    modalConfirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    
+    try {
+        // Call checkout.php
+        const response = await fetch('php/checkout.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `checkout=true&items=${JSON.stringify(itemsToCheckout.map(item => item.id))}`
+        });
         
-        if (itemsToCheckout.length === 0) {
-            alert('Please select at least one item to checkout.');
-            return;
+        const result = await response.json();
+        
+        if (result.success) {
+            // Show success message
+            alert(`✅ Order #${result.order_number} placed successfully!\nTotal: ₱${result.total}\n\nYour order has been received and is being processed.`);
+            
+            // Close modal
+            closeModal('checkout-modal');
+            
+            // Refresh cart (it should be empty now)
+            await updateCart();
+            
+            // Show success message on page
+            showSuccessMessage(`Order #${result.order_number} placed successfully!`);
+        } else {
+            alert('❌ Checkout failed: ' + result.message);
+            // Reset button
+            modalConfirmBtn.disabled = false;
+            modalConfirmBtn.innerHTML = 'Confirm Order';
         }
         
-        alert(`Order confirmed for ${itemsToCheckout.length} item(s)! Total: ${document.getElementById('modal-total').textContent}`);
-        
-        // Note: For full implementation, you'd need to create checkout.php
-        // to process the order and remove items from cart
-        closeModal('checkout-modal');
-    });
+    } catch (error) {
+        console.error('Checkout error:', error);
+        alert('❌ Network error. Please check your connection and try again.');
+        // Reset button
+        modalConfirmBtn.disabled = false;
+        modalConfirmBtn.innerHTML = 'Confirm Order';
+    }
+});
+
+// Function to show success message
+function showSuccessMessage(message) {
+    // Create or update success message element
+    let successMsg = document.getElementById('order-success-message');
+    if (!successMsg) {
+        successMsg = document.createElement('div');
+        successMsg.id = 'order-success-message';
+        successMsg.style.cssText = `
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            z-index: 1003;
+            animation: slideIn 0.3s ease-out;
+        `;
+        document.body.appendChild(successMsg);
+    }
+    
+    successMsg.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+    successMsg.style.display = 'block';
+    
+    // Hide after 5 seconds
+    setTimeout(() => {
+        successMsg.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => {
+            successMsg.style.display = 'none';
+            successMsg.style.animation = 'slideIn 0.3s ease-out';
+        }, 300);
+    }, 5000);
+}
 
     // Initialize cart display and address
     updateCart();

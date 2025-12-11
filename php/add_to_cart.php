@@ -1,5 +1,5 @@
 <?php
-// add_to_cart.php
+// add_to_cart.php - UPDATED WITH DEBUGGING
 
 session_start();
 require_once 'db_connect.php';
@@ -8,8 +8,13 @@ require_once 'db_connect.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// Debug session
+error_log("Session user_id: " . (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'NOT SET'));
+error_log("Session username: " . (isset($_SESSION['username']) ? $_SESSION['username'] : 'NOT SET'));
+
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
+    error_log("User not logged in - redirecting");
     echo json_encode(['success' => false, 'message' => 'Please log in first']);
     exit();
 }
@@ -18,6 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
     $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 1;
     $user_id = $_SESSION['user_id'];
+    
+    error_log("Adding to cart - User ID: $user_id, Product ID: $product_id, Quantity: $quantity");
     
     if ($product_id <= 0 || $quantity <= 0) {
         echo json_encode(['success' => false, 'message' => 'Invalid product or quantity']);
@@ -31,9 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $product = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if (!$product) {
+            error_log("Product not found: $product_id");
             echo json_encode(['success' => false, 'message' => 'Product not found']);
             exit();
         }
+        
+        error_log("Found product: " . $product['product_name'] . " - Price: " . $product['price']);
         
         // Check if item already exists in user's cart
         $stmt = $conn->prepare("SELECT cart_item_id, quantity FROM cart_items WHERE user_id = ? AND product_id = ?");
@@ -45,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $new_quantity = $existing_item['quantity'] + $quantity;
             $stmt = $conn->prepare("UPDATE cart_items SET quantity = ?, updated_at = CURRENT_TIMESTAMP WHERE cart_item_id = ?");
             $stmt->execute([$new_quantity, $existing_item['cart_item_id']]);
+            error_log("Updated existing item - Cart Item ID: " . $existing_item['cart_item_id'] . " - New Quantity: $new_quantity");
         } else {
             // Add new item to cart
             $stmt = $conn->prepare("INSERT INTO cart_items (user_id, product_id, product_name, price, quantity) VALUES (?, ?, ?, ?, ?)");
@@ -55,12 +66,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $product['price'], 
                 $quantity
             ]);
+            $cart_item_id = $conn->lastInsertId();
+            error_log("Added new item - Cart Item ID: $cart_item_id");
         }
         
         // Get updated cart count for response
         $stmt = $conn->prepare("SELECT COUNT(*) as count FROM cart_items WHERE user_id = ?");
         $stmt->execute([$user_id]);
         $cart_count = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        error_log("Cart count after update: " . $cart_count['count']);
         
         echo json_encode([
             'success' => true, 

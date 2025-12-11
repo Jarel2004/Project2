@@ -1,5 +1,5 @@
 <?php
-// update_profile.php
+// update_profile.php - UPDATED VERSION
 
 require_once 'db_connect.php';
 session_start();
@@ -11,6 +11,9 @@ if (!isset($_SESSION['user_id'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user_id = $_SESSION['user_id'];
     $response = ['success' => false, 'message' => ''];
+    
+    $username_updated = false;
+    $address_updated = false;
     
     // Update username
     if (isset($_POST['username'])) {
@@ -38,8 +41,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Update session
                 $_SESSION['username'] = $new_username;
                 
+                $username_updated = true;
                 $response['success'] = true;
                 $response['message'] = 'Username updated';
+                $response['new_username'] = $new_username; // Return new username
             }
         }
     }
@@ -50,11 +55,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         $update = $conn->prepare("UPDATE users SET delivery_address = ? WHERE user_id = ?");
         if ($update->execute([$address, $user_id])) {
+            $address_updated = true;
             $response['success'] = true;
             $response['message'] = $response['message'] ? $response['message'] . ' and address updated' : 'Address updated';
+            $response['new_address'] = $address; // Return new address
+        }
+    }
+    
+    // If both username and address were sent
+    if (isset($_POST['username']) && isset($_POST['address'])) {
+        if ($username_updated && $address_updated) {
+            $response['message'] = 'Profile updated successfully';
         }
     }
     
     echo json_encode($response);
+} else {
+    // GET request - return current profile data
+    $user_id = $_SESSION['user_id'];
+    
+    $stmt = $conn->prepare("SELECT username, delivery_address FROM users WHERE user_id = ?");
+    $stmt->execute([$user_id]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    echo json_encode([
+        'success' => true,
+        'username' => $user['username'],
+        'address' => $user['delivery_address'] ?: ''
+    ]);
 }
 ?>

@@ -265,6 +265,48 @@ $username = $_SESSION['username'];
             transform: translateY(0);
             transition: transform 0.1s;
         }
+        .about {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 40px;
+        }
+        .about h2 {
+            font-size: 28px;
+            color: #272727;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .about p {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            text-align: center;
+        }
+        .contact {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 40px;
+        }
+        .contact h2 {
+            font-size: 28px;
+            color: #272727;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .contact p {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            text-align: center;
+        }
+        .contact a {
+            color: #e2612d;
+            text-decoration: none;
+        }
 
         footer {
             width: 100%;
@@ -700,6 +742,8 @@ $username = $_SESSION['username'];
             <ul>
                 <li><a href="#body">Home</a></li>
                 <li><a href="#menu">Menu</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
         <div class="header-btns">
@@ -879,6 +923,24 @@ $username = $_SESSION['username'];
                 </div>
             </div>
         </section>
+        <div class="about" id="about">
+            <h2>
+                About Us
+            </h2>
+            <p>Karu-mata is a food delivery service that brings delicious Korean cuisine right to your doorstep. We specialize in traditional Korean dishes made with fresh ingredients and authentic flavors.</p>
+        </div>
+        <div class="contact" id="contact">
+            <h2>
+                Contact Us
+            </h2>
+            <p>If you have any questions, feedback, or inquiries, feel free to reach out to us at</p>
+            <p><i class="fas fa-envelope"></i> Email: <a href="mailto:karumata@gmail.com" target="_blank">karumata@gmail.com</a></p>
+            <p><i class="fas fa-phone"></i> Phone: <a href="tel:+639452959021" target="_blank">+63 945 295 9021</a></p>
+            <p><i class="fab fa-facebook"></i> Facebook: <a href="https://www.facebook.com/mollejonlink/about/?_rdr" target="_blank">Karu-mata</a></p>
+            <p><i class="fas fa-map-marker-alt"></i> Address: <a href="https://maps.app.goo.gl/ijkNQKifxPCsgYjS8" target="_blank">Seawall, Poblacion, Dalaguete, 6022 Cebu</a></p>
+            <p>We look forward to hearing from you!</p>
+
+        </div>
     </main>
 
     <footer>
